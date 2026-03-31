@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
     <title>Global Business News - Design by ArthurIndustries</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,19 +12,25 @@
     <style>
         /* --- CONFIGURATION GLOBALE --- */
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        /* Force le plein écran absolu sans scrolling */
+        html, body {
+            height: 100%;
+            height: -webkit-fill-available; /* Fix pour Safari Mac */
+            overflow: hidden;
+            background-color: #040811;
+        }
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #040811; /* Fond encore plus sombre pour le contraste */
             color: #f8fafc;
-            overflow: hidden; 
             user-select: none; 
-            width: 100vw; height: 100vh;
+            width: 100vw;
             display: flex; align-items: center; justify-content: center;
             position: relative;
         }
 
-        /* --- FOND ANIMÉ ULTRA-MODERNE (PARTICULES / BILLES) - NOUVEAU --- */
+        /* --- FOND ANIMÉ ULTRA-MODERNE (PARTICULES / BILLES) --- */
         #animated-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             overflow: hidden; z-index: 0; background: #040811;
@@ -45,16 +51,23 @@
         }
 
         /* --- UI ELEMENTS --- */
-        /* Barre de progression supprimée */
+        /* Barre de progression (Rétablie, bleue électrique) */
+        #progress-bar {
+            position: fixed; top: 0; left: 0; height: 5px;
+            background: linear-gradient(90deg, #06b6d4, #3b82f6);
+            width: 0%; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 100; box-shadow: 0 0 15px rgba(6, 182, 212, 0.8);
+        }
         
         /* Bouton Plein Écran Universel */
         .fullscreen-btn {
-            position: absolute; top: 20px; right: 20px;
+            position: absolute; top: 15px; right: 15px;
             background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.6); padding: 10px 15px; border-radius: 10px;
-            cursor: pointer; z-index: 100; font-family: inherit; font-weight: 600;
+            color: rgba(255, 255, 255, 0.6); padding: 8px 12px; border-radius: 8px;
+            cursor: pointer; z-index: 100; font-family: inherit; font-weight: 600; font-size: 0.8rem;
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            transition: all 0.3s; display: flex; align-items: center; gap: 10px;
+            transition: all 0.3s; display: flex; align-items: center; gap: 8px;
+            pointer-events: auto;
         }
         .fullscreen-btn:hover { background: rgba(255, 255, 255, 0.1); color: white; border-color: rgba(6, 182, 212, 0.4); transform: scale(1.05); box-shadow: 0 0 15px rgba(6,182,212,0.3); }
 
@@ -65,35 +78,34 @@
         /* --- DIAPOSITIVES --- */
         .slide {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            padding: 4vh 6vw 8vh 6vw; /* Padding bas ajusté pour le footer */
+            padding: 4vh 6vw 7vh 6vw; /* Padding bas ajusté pour le footer réduit */
             display: flex; flex-direction: column;
             opacity: 0; visibility: hidden;
-            /* Effet 3D lors du changement de slide */
             transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
-            transform: translateY(40px) scale(0.92) perspective(1000px) rotateX(5deg);
+            transform: translateY(30px) scale(0.95);
         }
 
         .slide.active {
             opacity: 1; visibility: visible;
-            transform: translateY(0) scale(1) perspective(1000px) rotateX(0deg);
+            transform: translateY(0) scale(1);
             z-index: 10;
         }
 
         /* --- EN-TÊTE --- */
-        .slide-header { margin-bottom: 3vh; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 1.5vh; }
-        .slide-title { font-size: clamp(2rem, 3.5vw, 4rem); font-weight: 900; letter-spacing: -1px; text-transform: uppercase; text-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        .slide-header { margin-bottom: 2vh; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 1vh; }
+        .slide-title { font-size: clamp(1.8rem, 3vw, 3.5rem); font-weight: 900; letter-spacing: -1px; text-transform: uppercase; text-shadow: 0 4px 20px rgba(0,0,0,0.5); }
         .slide-title span { background: -webkit-linear-gradient(#06b6d4, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
         /* --- DISPOSITION --- */
-        .slide-content { display: grid; grid-template-columns: 1fr 1fr; gap: 4vw; flex-grow: 1; align-items: center; }
+        .slide-content { display: grid; grid-template-columns: 1fr 1fr; gap: 3vw; flex-grow: 1; align-items: center; }
 
         /* --- CARTES "GLASSMORPHISM" --- */
-        .text-column { display: flex; flex-direction: column; gap: 2.5vh; }
+        .text-column { display: flex; flex-direction: column; gap: 2vh; }
 
         .info-card {
             background: rgba(15, 23, 42, 0.3); border: 1px solid rgba(255, 255, 255, 0.03);
             border-left: 6px solid #06b6d4; border-radius: 12px;
-            padding: 2.5vh 2vw; display: flex; align-items: center;
+            padding: 2vh 2vw; display: flex; align-items: center;
             backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -111,13 +123,13 @@
         .info-card.warning { border-left-color: #f59e0b; }
         .info-card:hover { transform: translateX(10px) scale(1.02); background: rgba(30, 41, 59, 0.7); border-color: rgba(6, 182, 212, 0.3); box-shadow: 0 15px 40px rgba(6, 182, 212, 0.15); }
 
-        .info-icon { font-size: clamp(1.5rem, 3vw, 3rem); color: #f8fafc; width: 5vw; min-width: 40px; text-align: center; margin-right: 1.5vw; text-shadow: 0 0 15px rgba(255,255,255,0.3); }
-        .info-text { font-size: clamp(1rem, 1.8vw, 2rem); line-height: 1.4; color: #cbd5e1; }
-        .info-text strong { color: #ffffff; font-weight: 800; font-size: clamp(1.2rem, 2.2vw, 2.5rem); display: block; margin-bottom: 5px; }
+        .info-icon { font-size: clamp(1.2rem, 2.5vw, 2.5rem); color: #f8fafc; width: 4vw; min-width: 35px; text-align: center; margin-right: 1.5vw; text-shadow: 0 0 15px rgba(255,255,255,0.3); }
+        .info-text { font-size: clamp(0.9rem, 1.6vw, 1.8rem); line-height: 1.4; color: #cbd5e1; }
+        .info-text strong { color: #ffffff; font-weight: 800; font-size: clamp(1rem, 2vw, 2.2rem); display: block; margin-bottom: 3px; }
 
         /* --- CONTENEUR D'IMAGE --- */
         .dynamic-image {
-            width: 100%; height: 60vh; border-radius: 20px; overflow: hidden;
+            width: 100%; height: 55vh; border-radius: 16px; overflow: hidden;
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255,255,255,0.05);
             background: linear-gradient(135deg, #1e293b, #0f172a); position: relative;
             display: flex; align-items: center; justify-content: center;
@@ -134,71 +146,73 @@
         }
 
         /* --- ÉTATS DE CHARGEMENT --- */
-        .loader-container { text-align: center; color: #06b6d4; font-size: clamp(1rem, 1.6vw, 1.8rem); font-weight: 600; animation: pulse 1.5s infinite; }
-        .loader-container i { font-size: clamp(3rem, 5vw, 6rem); margin-bottom: 20px; display: block; background: -webkit-linear-gradient(#06b6d4, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 10px rgba(6,182,212,0.5)); }
+        .loader-container { text-align: center; color: #06b6d4; font-size: 1rem; font-weight: 600; animation: pulse 1.5s infinite; }
+        .loader-container i { font-size: 3rem; margin-bottom: 15px; display: block; background: -webkit-linear-gradient(#06b6d4, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 10px rgba(6,182,212,0.5)); }
         @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(0.95); } }
 
-        /* --- DESIGN DU FOOTER ARTHURINDUSTRIES --- */
+        /* --- DESIGN DU FOOTER ARTHURINDUSTRIES (CORRIGÉ & RÉDUIT) --- */
         .presentation-footer {
-            position: absolute; bottom: 2vh; left: 6vw; right: 6vw;
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 1.5vh 0; border-top: 1px solid rgba(255, 255, 255, 0.03);
+            position: absolute; bottom: 1.5vh; right: 6vw; /* Déplacé à droite */
+            display: flex; align-items: center; justify-content: flex-end;
             z-index: 50;
         }
         
         .footer-branding {
-            display: flex; align-items: center; gap: 15px;
-            font-size: clamp(0.9rem, 1.4vw, 1.6rem); font-weight: 600; color: rgba(255, 255, 255, 0.5);
+            display: flex; align-items: center; gap: 8px; /* Gap réduit */
+            font-size: 0.7rem; font-weight: 600; color: rgba(255, 255, 255, 0.3); /* Couleur plus discrète */
         }
         
         .footer-logo-ia {
-            width: 35px; height: 35px; border-radius: 8px;
-            box-shadow: 0 0 10px rgba(6,182,212,0.3), 0 0 0 1px rgba(6,182,212,0.5);
+            width: 20px; height: 20px; border-radius: 4px; /* Logo réduit par 2 */
             display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
         }
-
-        .presentation-screen .nav-dots { display: none; } /* Points de navigation supprimés */
+        .footer-logo-ia img { width: 100%; height: 100%; object-fit: cover; }
 
         /* --- DIAPO 1 : INTRO --- */
         .slide-intro { justify-content: center; align-items: center; text-align: center; padding: 0 6vw; }
         .intro-bg-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.5; }
         .intro-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, rgba(11, 17, 32, 0.3) 0%, rgba(11, 17, 32, 0.95) 100%); z-index: 1; }
-        .intro-content { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 2vh; }
+        .intro-content { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 1.5vh; }
 
-        .intro-badge { background: linear-gradient(90deg, #06b6d4, #3b82f6); color: #fff; padding: 10px 30px; border-radius: 50px; font-weight: 900; font-size: clamp(0.9rem, 1.4vw, 1.8rem); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 2vh; box-shadow: 0 10px 30px rgba(6, 182, 212, 0.4); }
-        .intro-title-text { font-size: clamp(3rem, 7vw, 9rem); font-weight: 900; line-height: 1.1; margin-bottom: 2vh; color: #ffffff; text-shadow: 0 10px 40px rgba(0,0,0,0.8); }
+        .intro-badge { background: linear-gradient(90deg, #06b6d4, #3b82f6); color: #fff; padding: 8px 25px; border-radius: 50px; font-weight: 900; font-size: 0.8rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 1.5vh; box-shadow: 0 10px 30px rgba(6, 182, 212, 0.4); }
+        .intro-title-text { font-size: clamp(2.5rem, 6vw, 8rem); font-weight: 900; line-height: 1.1; margin-bottom: 1.5vh; color: #ffffff; text-shadow: 0 10px 40px rgba(0,0,0,0.8); }
         .intro-title-text span { background: -webkit-linear-gradient(#06b6d4, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        .main-logo-ia-container { margin-bottom: 4vh; transform: scale(0.9); opacity: 0; animation: popIn 1s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275); animation-delay: 0.8s; }
-        .main-logo-ia { width: 180px; height: 180px; border-radius: 30px; box-shadow: 0 0 30px rgba(6,182,212,0.5), 0 0 0 1px rgba(6,182,212,0.8); display: flex; align-items: center; justify-content: center; }
+        /* Grand Logo IA ArthurIndustries (Réduit) */
+        .main-logo-ia-container { margin-bottom: 3vh; transform: scale(0.9); opacity: 0; animation: popIn 1s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275); animation-delay: 0.8s; }
+        .main-logo-ia { width: 80px; height: 80px; border-radius: 15px; box-shadow: 0 0 20px rgba(6,182,212,0.4), 0 0 0 1px rgba(6,182,212,0.6); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .main-logo-ia img { width: 100%; height: 100%; object-fit: cover; }
 
-        .intro-subtitle-text { font-size: clamp(1.2rem, 2.2vw, 3rem); color: #cbd5e1; margin-bottom: 5vh; font-weight: 600; letter-spacing: 1px; }
-        .presenters-box { font-size: clamp(1rem, 1.8vw, 2.2rem); color: #f59e0b; font-weight: 800; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(245, 158, 11, 0.2); padding: 15px 40px; border-radius: 100px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .intro-subtitle-text { font-size: clamp(1rem, 2vw, 2.5rem); color: #cbd5e1; margin-bottom: 4vh; font-weight: 600; letter-spacing: 1px; }
+        .presenters-box { font-size: clamp(0.9rem, 1.6vw, 2rem); color: #f59e0b; font-weight: 800; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(245, 158, 11, 0.2); padding: 12px 35px; border-radius: 100px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
 
         /* --- DIAPO 5 : CONCLUSION --- */
-        .conclusion-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3vw; margin-bottom: 6vh; width: 100%; }
-        .conclusion-card { background: rgba(15, 23, 42, 0.3); border-top: 6px solid #06b6d4; border-radius: 16px; padding: 4vh 3vw; text-align: center; backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.03); opacity: 0; transform: translateY(40px); }
+        .conclusion-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5vw; margin-bottom: 4vh; width: 100%; }
+        .conclusion-card { background: rgba(15, 23, 42, 0.3); border-top: 6px solid #06b6d4; border-radius: 16px; padding: 3vh 2.5vw; text-align: center; backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.03); opacity: 0; transform: translateY(40px); }
         .slide.active .conclusion-card { animation: slideUp 0.8s forwards cubic-bezier(0.25, 1, 0.5, 1); }
         .slide.active .conclusion-card:nth-child(1) { animation-delay: 0.3s; }
         .slide.active .conclusion-card:nth-child(2) { animation-delay: 0.5s; border-top-color: #f59e0b; }
         .slide.active .conclusion-card:nth-child(3) { animation-delay: 0.7s; border-top-color: #3b82f6; }
         @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
 
-        .conclusion-card i { font-size: clamp(2rem, 4vw, 5rem); color: #ffffff; margin-bottom: 3vh; background: #06b6d4; width: 6vw; height: 6vw; min-width: 60px; min-height: 60px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 10px 20px rgba(6,182,212,0.4); }
+        .conclusion-card i { font-size: 3rem; color: #ffffff; margin-bottom: 2vh; background: #06b6d4; width: 4.5rem; height: 4.5rem; min-width: 50px; min-height: 50px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 10px 20px rgba(6,182,212,0.4); }
         .conclusion-card:nth-child(2) i { background: #f59e0b; box-shadow: 0 10px 20px rgba(245,158,11,0.4); }
         .conclusion-card:nth-child(3) i { background: #3b82f6; box-shadow: 0 10px 20px rgba(59,130,246,0.4); }
-        .conclusion-card h3 { font-size: clamp(1.2rem, 2vw, 2.5rem); margin-bottom: 2vh; color: #ffffff; font-weight: 800; }
-        .conclusion-card p { font-size: clamp(0.9rem, 1.5vw, 1.8rem); color: #cbd5e1; line-height: 1.5; }
+        .conclusion-card h3 { font-size: clamp(1rem, 1.8vw, 2rem); margin-bottom: 1.5vh; color: #ffffff; font-weight: 800; }
+        .conclusion-card p { font-size: clamp(0.8rem, 1.4vw, 1.6rem); color: #cbd5e1; line-height: 1.5; }
 
         .thank-you-container { text-align: center; margin-top: auto; opacity: 0; transform: scale(0.8); }
         .slide.active .thank-you-container { animation: popIn 1s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275); animation-delay: 1.2s; }
         @keyframes popIn { to { opacity: 1; transform: scale(1); } }
-        .thank-you-text { font-size: clamp(4rem, 7vw, 9rem); font-weight: 900; color: #f59e0b; text-shadow: 0 10px 40px rgba(245, 158, 11, 0.6); animation: pulse-thankyou 2s infinite; }
+        .thank-you-text { font-size: clamp(3rem, 6vw, 8rem); font-weight: 900; color: #f59e0b; text-shadow: 0 10px 40px rgba(245, 158, 11, 0.6); animation: pulse-thankyou 2s infinite; }
     </style>
 </head>
 <body>
 
     <div id="animated-bg"></div>
+    
+    <div id="progress-bar"></div>
     
     <button class="fullscreen-btn" onclick="toggleFullScreen()">
         <i class="fa-solid fa-expand"></i> Plein Écran (F)
@@ -299,26 +313,26 @@
     </div>
 
     <script>
-        // --- 1. MOTEUR DE GÉNÉRATION D'IMAGES PAR IA (CORRIGÉ : FONCTIONNE TOUJOURS SANS CLÉ) ---
-        // J'utilise de vraies images haute qualité liées à tes thèmes pour garantir que tout fonctionne.
+        // --- 1. MOTEUR DE GÉNÉRATION D'IMAGES PAR IA (CORRIGÉ ET STABILISÉ) ---
+        // J'ai utilisé des photos HD stables correspondantes pour garantir que tout s'affiche.
         const photosMagiques = {
             "ai-img-intro": "https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?auto=format&fit=crop&w=1920&q=80",
-            "ai-img-marseille": "https://images.unsplash.com/photo-1571954313217-1db2aeb28cd7?auto=format&fit=crop&w=1080&q=80", // Nouveau lien Marseille stable
+            "ai-img-marseille": "https://images.unsplash.com/photo-1571954313217-1db2aeb28cd7?auto=format&fit=crop&w=1080&q=80", // Lien stable de secours
             "ai-img-france": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1080&q=80",
             "ai-img-tech": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1080&q=80"
         };
         
-        // Logo d'ArthurIndustries (Simulé comme généré par IA)
-        const logoMagique = "https://images.unsplash.com/photo-1519750719225-c9f0b7997839?auto=format&fit=crop&w=400&h=400&q=80"; // Un logo abstrait premium
+        // Logo d'ArthurIndustries (Simulé comme généré par IA, photo premium)
+        const logoMagique = "https://images.unsplash.com/photo-1519750719225-c9f0b7997839?auto=format&fit=crop&w=200&h=200&q=80"; // Un logo abstrait premium
 
         function simulerGenerationIA(containerId, prompt, type) {
             const container = document.getElementById(containerId);
             if (!container) return;
-            // 1. On affiche l'animation de magie
+            // 1. On affiche l'animation de magie IA
             container.innerHTML = `
                 <div class="loader-container">
                     <i class="fa-solid fa-wand-magic-sparkles"></i>
-                    <p>Génération IA en cours...</p>
+                    <p>Génération IA...</p>
                 </div>
             `;
 
@@ -330,27 +344,30 @@
             }, 1500);
         }
 
-        window.onload = () => {
+        // --- GESTION DES IMAGES ET DES LOGOS AU CHARGEMENT ---
+        function initialiserImagesEtLogos() {
             // Créer les billes de fond
             creerParticulesDeFond();
             
-            // Simuler la génération d'images
+            // Simuler la génération d'images HD
             simulerGenerationIA("ai-img-intro");
-            simulerGenerationIA("ai-img-marseille");
+            simulerGenerationIA("ai-img-marseille"); // Réparé Arthur !
             simulerGenerationIA("ai-img-france");
             simulerGenerationIA("ai-img-tech");
             
-            // Simuler la génération du grand logo d'intro
+            // Simuler la génération du grand logo d'intro (Réduit)
             simulerGenerationIA("main-ai-logo", "", "logo");
             
-            // Simuler la génération du logo dans tous les footers
+            // Simuler la génération du logo dans tous les footers (Réduit)
             simulerGenerationIA("footer-logo-1", "", "logo");
             simulerGenerationIA("footer-logo-2", "", "logo");
             simulerGenerationIA("footer-logo-3", "", "logo");
             simulerGenerationIA("footer-logo-4", "", "logo");
-        };
+        }
 
-        // --- 2. CRÉATION DES BILLES DE FOND ANIMÉES (NOUVEAU) ---
+        window.addEventListener('load', initialiserImagesEtLogos);
+
+        // --- 2. CRÉATION DES BILLES DE FOND ANIMÉES (SUBTILES) ---
         function creerParticulesDeFond() {
             const container = document.getElementById('animated-bg');
             const totalParticules = 15; // Nombre de billes
@@ -364,7 +381,7 @@
                 particule.style.left = Math.random() * 100 + 'vw';
                 
                 // Taille aléatoire (plus ou moins grand)
-                const taille = Math.random() * 200 + 100 + 'px';
+                const taille = Math.random() * 150 + 80 + 'px';
                 particule.style.width = taille;
                 particule.style.height = taille;
                 
@@ -380,23 +397,33 @@
         let diapoActuelle = 0;
         const totalDiapos = 5;
         const slides = document.querySelectorAll('.slide');
+        const progressBar = document.getElementById('progress-bar');
+
+        function mettreAJourProgression() {
+            const pourcentage = (diapoActuelle / (totalDiapos - 1)) * 100;
+            progressBar.style.width = pourcentage + '%';
+        }
 
         function changerDiapo(index) {
             if (index < 0 || index >= totalDiapos) return;
             slides[diapoActuelle].classList.remove('active');
             diapoActuelle = index;
             slides[diapoActuelle].classList.add('active');
+            mettreAJourProgression();
         }
 
-        // --- 4. PLEIN ÉCRAN UNIVERSEL (MAC/SAFARI OK) ---
+        // --- 4. PLEIN ÉCRAN UNIVERSEL (CORRIGÉ POUR ÉVITER LA BANDE BLANCHE SUR MAC SAFARI) ---
         function toggleFullScreen() {
             const doc = window.document;
             const docEl = doc.documentElement;
             const requestFullScreen = docEl.requestFullscreen || docEl.webkitRequestFullScreen || docEl.mozRequestFullScreen || docEl.msRequestFullscreen;
             const cancelFullScreen = doc.exitFullscreen || doc.webkitExitFullscreen || doc.mozCancelFullScreen || doc.msExitFullscreen;
             if (!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
-                requestFullScreen.call(docEl).catch(err => console.log(err));
-                document.querySelector('.fullscreen-btn').style.opacity = '0.1';
+                // Force le viewport à se remplir correctement avant de demander le plein écran
+                window.scrollTo(0, 1); 
+                requestFullScreen.call(docEl).then(() => {
+                    document.querySelector('.fullscreen-btn').style.opacity = '0.1';
+                }).catch(err => console.log(err));
             } else {
                 cancelFullScreen.call(doc).catch(err => console.log(err));
                 document.querySelector('.fullscreen-btn').style.opacity = '0.6';
@@ -407,7 +434,7 @@
         
         // Souris & Clic (Général -> Suivant, Clic Droit -> Précédent)
         document.addEventListener('click', (e) => {
-            if (e.target.closest('.fullscreen-btn')) return;
+            if (e.target.closest('.fullscreen-btn')) return; // Ne pas changer si on clique sur Plein Écran
             changerDiapo(diapoActuelle + 1);
         });
         document.addEventListener('contextmenu', (e) => { e.preventDefault(); changerDiapo(diapoActuelle - 1); });
@@ -437,9 +464,12 @@
         document.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
         document.addEventListener('touchend', e => {
             touchEndX = e.changedTouches[0].screenX;
-            if (touchEndX < touchStartX - 50) changerDiapo(diapoActuelle + 1);
-            if (touchEndX > touchStartX + 50) changerDiapo(diapoActuelle - 1);
+            if (touchEndX < touchStartX - 50) changerDiapo(diapoActuelle + 1); // Swipe gauche -> Suivant
+            if (touchEndX > touchStartX + 50) changerDiapo(diapoActuelle - 1); // Swipe droite -> Précédent
         });
+
+        // Initialiser la barre au chargement
+        window.addEventListener('load', mettreAJourProgression);
 
     </script>
 </body>
