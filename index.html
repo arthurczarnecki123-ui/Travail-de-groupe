@@ -76,25 +76,21 @@
         .slide.active { opacity: 1; visibility: visible; transform: translate3d(0, 0, 0); z-index: 20; }
 
         /* =========================================
-           5. LA TERRE GÉANTE (ARRIÈRE-PLAN COMPLET INTRO)
+           5. LA TERRE GÉANTE (ARRIÈRE-PLAN COMPLET INTRO) - MAINTENANT STATIQUE
            ========================================= */
         .slide-intro { justify-content: center; align-items: center; text-align: center; padding: 0; overflow: hidden; }
         
         .earth-full-bg {
             position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
             border-radius: 50%;
-            /* Une belle texture stable, et si ça coupe, un fond bleu nuit tournant */
             background-color: #001133;
             background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Solarsystemscope_texture_8k_earth_daymap.jpg/1024px-Solarsystemscope_texture_8k_earth_daymap.jpg');
-            background-size: cover; background-repeat: repeat-x;
-            animation: spinEarthTex 40s linear infinite;
+            background-size: cover; 
+            background-repeat: no-repeat; /* Plus de répétition */
+            background-position: center; /* Centrée */
+            /* animation supprimée ici pour fond statique */
             box-shadow: inset -80px -80px 200px rgba(0, 0, 0, 0.95), inset 20px 20px 80px rgba(0, 242, 254, 0.2);
             opacity: 0.7; transform: rotate(-10deg); z-index: 0;
-        }
-
-        @keyframes spinEarthTex {
-            0% { background-position: 0 0; }
-            100% { background-position: -2000px 0; }
         }
 
         .intro-overlay {
@@ -328,8 +324,9 @@
         }
 
         window.addEventListener('load', () => {
-            // Marseille (Image ultra-sécurisée Pexels qui ne plantera pas)
-            simulerGenerationIA('ai-img-marseille', 'https://images.pexels.com/photos/161815/marseilles-old-port-boats-france-161815.jpeg?auto=compress&cs=tinysrgb&w=1200');
+            // Implantation de Marseille corrigée pour fonctionner comme les autres
+            // Marseille (Photo haute qualité implantée via simulateur)
+            simulerGenerationIA('ai-img-marseille', 'https://images.unsplash.com/photo-1566417772186-0744957e8445?auto=format&fit=crop&w=1200&q=80');
             // France (Boulangerie traditionnelle)
             simulerGenerationIA('ai-img-france', 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1200&q=80');
             // Tech (Le nouveau Robot super stylé !)
@@ -338,7 +335,7 @@
 
 
         // =========================================
-        // 2. MOTEUR DE NAVIGATION
+        // 2. MOTEUR DE NAVIGATION CHROME
         // =========================================
         let diapoActuelle = 0;
         const totalDiapos = 5;
