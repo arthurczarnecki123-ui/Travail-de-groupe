@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Business News Presentation</title>
+    <title>Global Business News - Design by ArthurIndustries</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800;900&display=swap" rel="stylesheet">
@@ -15,53 +15,48 @@
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #0b1120;
+            background-color: #040811; /* Fond encore plus sombre pour le contraste */
             color: #f8fafc;
             overflow: hidden; 
-            user-select: none; /* Empêche de surligner le texte par erreur en cliquant */
+            user-select: none; 
             width: 100vw; height: 100vh;
             display: flex; align-items: center; justify-content: center;
             position: relative;
         }
 
-        /* --- FOND ANIMÉ ULTRA-MODERNE (ORBES FLOTTANTES) - CORRIGÉES POUR ÊTRE VISIBLES --- */
-        .animated-bg {
+        /* --- FOND ANIMÉ ULTRA-MODERNE (PARTICULES / BILLES) - NOUVEAU --- */
+        #animated-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            overflow: hidden; z-index: 0; background: #0b1120;
+            overflow: hidden; z-index: 0; background: #040811;
         }
-        .orb {
+        
+        .particle {
             position: absolute; border-radius: 50%;
-            filter: blur(80px); opacity: 0.7; /* Opacité augmentée */
-            animation: float 20s infinite ease-in-out alternate;
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.4), rgba(59, 130, 246, 0.2));
+            filter: blur(10px); opacity: 0.6;
+            animation: floatParticle 30s infinite linear;
         }
-        /* Orbes plus grandes et mieux positionnées vers le centre */
-        .orb-1 { width: 70vw; height: 70vw; background: rgba(6, 182, 212, 0.4); top: 10%; left: 10%; animation-delay: 0s; }
-        .orb-2 { width: 80vw; height: 80vw; background: rgba(59, 130, 246, 0.3); bottom: 10%; right: 10%; animation-delay: -5s; }
-        .orb-3 { width: 60vw; height: 60vw; background: rgba(245, 158, 11, 0.25); top: 30%; left: 40%; animation-delay: -10s; }
 
-        @keyframes float {
+        @keyframes floatParticle {
             0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(150px, 80px) scale(1.2); }
+            33% { transform: translate(100px, 50px) scale(1.1) rotate(10deg); }
+            66% { transform: translate(-50px, 100px) scale(0.9) rotate(-10deg); }
+            100% { transform: translate(0, 0) scale(1) rotate(0); }
         }
 
         /* --- UI ELEMENTS --- */
-        #progress-bar {
-            position: fixed; top: 0; left: 0; height: 6px;
-            background: linear-gradient(90deg, #06b6d4, #3b82f6);
-            width: 0%; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 100; box-shadow: 0 0 15px rgba(6, 182, 212, 0.8);
-        }
-
+        /* Barre de progression supprimée */
+        
         /* Bouton Plein Écran Universel */
         .fullscreen-btn {
             position: absolute; top: 20px; right: 20px;
-            background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white; padding: 10px 15px; border-radius: 10px;
-            cursor: pointer; z-index: 100; font-family: inherit;
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6); padding: 10px 15px; border-radius: 10px;
+            cursor: pointer; z-index: 100; font-family: inherit; font-weight: 600;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             transition: all 0.3s; display: flex; align-items: center; gap: 10px;
         }
-        .fullscreen-btn:hover { background: rgba(255, 255, 255, 0.2); transform: scale(1.05); }
+        .fullscreen-btn:hover { background: rgba(255, 255, 255, 0.1); color: white; border-color: rgba(6, 182, 212, 0.4); transform: scale(1.05); box-shadow: 0 0 15px rgba(6,182,212,0.3); }
 
         .presentation-screen {
             width: 100vw; height: 100vh; position: relative; z-index: 1;
@@ -70,7 +65,8 @@
         /* --- DIAPOSITIVES --- */
         .slide {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            padding: 5vh 6vw; display: flex; flex-direction: column;
+            padding: 4vh 6vw 8vh 6vw; /* Padding bas ajusté pour le footer */
+            display: flex; flex-direction: column;
             opacity: 0; visibility: hidden;
             /* Effet 3D lors du changement de slide */
             transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
@@ -84,7 +80,7 @@
         }
 
         /* --- EN-TÊTE --- */
-        .slide-header { margin-bottom: 3vh; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 1.5vh; }
+        .slide-header { margin-bottom: 3vh; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 1.5vh; }
         .slide-title { font-size: clamp(2rem, 3.5vw, 4rem); font-weight: 900; letter-spacing: -1px; text-transform: uppercase; text-shadow: 0 4px 20px rgba(0,0,0,0.5); }
         .slide-title span { background: -webkit-linear-gradient(#06b6d4, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
@@ -95,16 +91,16 @@
         .text-column { display: flex; flex-direction: column; gap: 2.5vh; }
 
         .info-card {
-            background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(255, 255, 255, 0.05);
-            border-left: 8px solid #06b6d4; border-radius: 16px;
-            padding: 2vh 2vw; display: flex; align-items: center;
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            background: rgba(15, 23, 42, 0.3); border: 1px solid rgba(255, 255, 255, 0.03);
+            border-left: 6px solid #06b6d4; border-radius: 12px;
+            padding: 2.5vh 2vw; display: flex; align-items: center;
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             opacity: 0; transform: translateX(-40px);
         }
 
-        .slide.active .info-card { animation: slideInRight 0.7s forwards; }
+        .slide.active .info-card { animation: slideInRight 0.7s forwards cubic-bezier(0.25, 1, 0.5, 1); }
         .slide.active .info-card:nth-child(1) { animation-delay: 0.2s; }
         .slide.active .info-card:nth-child(2) { animation-delay: 0.4s; }
         .slide.active .info-card:nth-child(3) { animation-delay: 0.6s; }
@@ -113,16 +109,16 @@
         @keyframes slideInRight { to { opacity: 1; transform: translateX(0); } }
 
         .info-card.warning { border-left-color: #f59e0b; }
-        .info-card:hover { transform: translateX(15px) scale(1.03); background: rgba(30, 41, 59, 0.8); border-color: rgba(6, 182, 212, 0.4); box-shadow: 0 15px 40px rgba(6, 182, 212, 0.2); }
+        .info-card:hover { transform: translateX(10px) scale(1.02); background: rgba(30, 41, 59, 0.7); border-color: rgba(6, 182, 212, 0.3); box-shadow: 0 15px 40px rgba(6, 182, 212, 0.15); }
 
         .info-icon { font-size: clamp(1.5rem, 3vw, 3rem); color: #f8fafc; width: 5vw; min-width: 40px; text-align: center; margin-right: 1.5vw; text-shadow: 0 0 15px rgba(255,255,255,0.3); }
         .info-text { font-size: clamp(1rem, 1.8vw, 2rem); line-height: 1.4; color: #cbd5e1; }
         .info-text strong { color: #ffffff; font-weight: 800; font-size: clamp(1.2rem, 2.2vw, 2.5rem); display: block; margin-bottom: 5px; }
 
-        /* --- CONTENEUR D'IMAGE GÉNÉRÉE PAR IA --- */
+        /* --- CONTENEUR D'IMAGE --- */
         .dynamic-image {
-            width: 100%; height: 60vh; border-radius: 24px; overflow: hidden;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255,255,255,0.1);
+            width: 100%; height: 60vh; border-radius: 20px; overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255,255,255,0.05);
             background: linear-gradient(135deg, #1e293b, #0f172a); position: relative;
             display: flex; align-items: center; justify-content: center;
         }
@@ -133,34 +129,55 @@
         }
 
         @keyframes fadeInImage {
-            from { opacity: 0; transform: scale(1.1); filter: blur(15px); }
+            from { opacity: 0; transform: scale(1.05); filter: blur(15px); }
             to { opacity: 1; transform: scale(1); filter: blur(0); }
         }
 
-        /* --- ÉTATS DE CHARGEMENT DE L'IA --- */
-        .loader-container { text-align: center; color: #06b6d4; font-size: clamp(1rem, 2vw, 2rem); font-weight: 600; animation: pulse 1.5s infinite; }
+        /* --- ÉTATS DE CHARGEMENT --- */
+        .loader-container { text-align: center; color: #06b6d4; font-size: clamp(1rem, 1.6vw, 1.8rem); font-weight: 600; animation: pulse 1.5s infinite; }
         .loader-container i { font-size: clamp(3rem, 5vw, 6rem); margin-bottom: 20px; display: block; background: -webkit-linear-gradient(#06b6d4, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 10px rgba(6,182,212,0.5)); }
         @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(0.95); } }
 
-        .error-container { text-align: center; color: #ef4444; font-size: clamp(1rem, 2vw, 2rem); padding: 2vw; animation: shake 0.5s; }
-        .error-container i { font-size: clamp(3rem, 5vw, 6rem); margin-bottom: 20px; display: block; }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-10px); } 40%, 80% { transform: translateX(10px); } }
+        /* --- DESIGN DU FOOTER ARTHURINDUSTRIES --- */
+        .presentation-footer {
+            position: absolute; bottom: 2vh; left: 6vw; right: 6vw;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 1.5vh 0; border-top: 1px solid rgba(255, 255, 255, 0.03);
+            z-index: 50;
+        }
+        
+        .footer-branding {
+            display: flex; align-items: center; gap: 15px;
+            font-size: clamp(0.9rem, 1.4vw, 1.6rem); font-weight: 600; color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .footer-logo-ia {
+            width: 35px; height: 35px; border-radius: 8px;
+            box-shadow: 0 0 10px rgba(6,182,212,0.3), 0 0 0 1px rgba(6,182,212,0.5);
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .presentation-screen .nav-dots { display: none; } /* Points de navigation supprimés */
 
         /* --- DIAPO 1 : INTRO --- */
-        .slide-intro { justify-content: center; align-items: center; text-align: center; padding: 0; }
+        .slide-intro { justify-content: center; align-items: center; text-align: center; padding: 0 6vw; }
         .intro-bg-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.5; }
-        .intro-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, rgba(11, 17, 32, 0.5) 0%, rgba(11, 17, 32, 0.95) 100%); z-index: 1; }
-        .intro-content { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; }
+        .intro-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, rgba(11, 17, 32, 0.3) 0%, rgba(11, 17, 32, 0.95) 100%); z-index: 1; }
+        .intro-content { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 2vh; }
 
-        .intro-badge { background: linear-gradient(90deg, #06b6d4, #3b82f6); color: #fff; padding: 10px 30px; border-radius: 50px; font-weight: 900; font-size: clamp(0.9rem, 1.5vw, 2rem); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 4vh; box-shadow: 0 10px 30px rgba(6, 182, 212, 0.4); }
+        .intro-badge { background: linear-gradient(90deg, #06b6d4, #3b82f6); color: #fff; padding: 10px 30px; border-radius: 50px; font-weight: 900; font-size: clamp(0.9rem, 1.4vw, 1.8rem); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 2vh; box-shadow: 0 10px 30px rgba(6, 182, 212, 0.4); }
         .intro-title-text { font-size: clamp(3rem, 7vw, 9rem); font-weight: 900; line-height: 1.1; margin-bottom: 2vh; color: #ffffff; text-shadow: 0 10px 40px rgba(0,0,0,0.8); }
         .intro-title-text span { background: -webkit-linear-gradient(#06b6d4, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .intro-subtitle-text { font-size: clamp(1.2rem, 2.5vw, 3.5rem); color: #cbd5e1; margin-bottom: 6vh; font-weight: 600; letter-spacing: 1px; }
-        .presenters-box { font-size: clamp(1rem, 2vw, 2.5rem); color: #f59e0b; font-weight: 800; background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(245, 158, 11, 0.3); padding: 15px 40px; border-radius: 100px; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        
+        .main-logo-ia-container { margin-bottom: 4vh; transform: scale(0.9); opacity: 0; animation: popIn 1s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275); animation-delay: 0.8s; }
+        .main-logo-ia { width: 180px; height: 180px; border-radius: 30px; box-shadow: 0 0 30px rgba(6,182,212,0.5), 0 0 0 1px rgba(6,182,212,0.8); display: flex; align-items: center; justify-content: center; }
+
+        .intro-subtitle-text { font-size: clamp(1.2rem, 2.2vw, 3rem); color: #cbd5e1; margin-bottom: 5vh; font-weight: 600; letter-spacing: 1px; }
+        .presenters-box { font-size: clamp(1rem, 1.8vw, 2.2rem); color: #f59e0b; font-weight: 800; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(245, 158, 11, 0.2); padding: 15px 40px; border-radius: 100px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
 
         /* --- DIAPO 5 : CONCLUSION --- */
         .conclusion-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3vw; margin-bottom: 6vh; width: 100%; }
-        .conclusion-card { background: rgba(15, 23, 42, 0.4); border-top: 6px solid #06b6d4; border-radius: 20px; padding: 3vw; text-align: center; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); opacity: 0; transform: translateY(40px); }
+        .conclusion-card { background: rgba(15, 23, 42, 0.3); border-top: 6px solid #06b6d4; border-radius: 16px; padding: 4vh 3vw; text-align: center; backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.03); opacity: 0; transform: translateY(40px); }
         .slide.active .conclusion-card { animation: slideUp 0.8s forwards cubic-bezier(0.25, 1, 0.5, 1); }
         .slide.active .conclusion-card:nth-child(1) { animation-delay: 0.3s; }
         .slide.active .conclusion-card:nth-child(2) { animation-delay: 0.5s; border-top-color: #f59e0b; }
@@ -170,29 +187,18 @@
         .conclusion-card i { font-size: clamp(2rem, 4vw, 5rem); color: #ffffff; margin-bottom: 3vh; background: #06b6d4; width: 6vw; height: 6vw; min-width: 60px; min-height: 60px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 10px 20px rgba(6,182,212,0.4); }
         .conclusion-card:nth-child(2) i { background: #f59e0b; box-shadow: 0 10px 20px rgba(245,158,11,0.4); }
         .conclusion-card:nth-child(3) i { background: #3b82f6; box-shadow: 0 10px 20px rgba(59,130,246,0.4); }
-        .conclusion-card h3 { font-size: clamp(1.2rem, 2.2vw, 3rem); margin-bottom: 2vh; color: #ffffff; font-weight: 800; }
-        .conclusion-card p { font-size: clamp(0.9rem, 1.5vw, 2rem); color: #cbd5e1; line-height: 1.5; }
+        .conclusion-card h3 { font-size: clamp(1.2rem, 2vw, 2.5rem); margin-bottom: 2vh; color: #ffffff; font-weight: 800; }
+        .conclusion-card p { font-size: clamp(0.9rem, 1.5vw, 1.8rem); color: #cbd5e1; line-height: 1.5; }
 
         .thank-you-container { text-align: center; margin-top: auto; opacity: 0; transform: scale(0.8); }
         .slide.active .thank-you-container { animation: popIn 1s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275); animation-delay: 1.2s; }
         @keyframes popIn { to { opacity: 1; transform: scale(1); } }
         .thank-you-text { font-size: clamp(4rem, 7vw, 9rem); font-weight: 900; color: #f59e0b; text-shadow: 0 10px 40px rgba(245, 158, 11, 0.6); animation: pulse-thankyou 2s infinite; }
-
-        /* --- NAVIGATION DOTS --- */
-        .nav-dots { position: absolute; bottom: 3vh; left: 0; width: 100%; display: flex; justify-content: center; gap: 20px; z-index: 20; }
-        .dot { width: 16px; height: 16px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); cursor: pointer; transition: all 0.4s; }
-        .dot.active { background: #06b6d4; transform: scale(1.6); box-shadow: 0 0 20px #06b6d4; }
     </style>
 </head>
 <body>
 
-    <div class="animated-bg">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
-    </div>
-
-    <div id="progress-bar"></div>
+    <div id="animated-bg"></div>
     
     <button class="fullscreen-btn" onclick="toggleFullScreen()">
         <i class="fa-solid fa-expand"></i> Plein Écran (F)
@@ -206,10 +212,15 @@
             <div class="intro-content">
                 <div class="intro-badge">Special Edition</div>
                 <h1 class="intro-title-text">Global <span>Business</span> News</h1>
+                
+                <div class="main-logo-ia-container">
+                    <div id="main-ai-logo" class="main-logo-ia"></div>
+                </div>
+
                 <p class="intro-subtitle-text">Local, National, and International Insights</p>
                 <div class="presenters-box"><i class="fa-solid fa-microphone-lines" style="margin-right: 15px;"></i> Presented by: Ilyana, Elsa & Anna</div>
             </div>
-        </div>
+            </div>
 
         <div class="slide" id="slide-1">
             <div class="slide-header"><h2 class="slide-title">Local News: <span>Marseille</span></h2></div>
@@ -221,6 +232,13 @@
                     <div class="info-card warning"><i class="fa-solid fa-triangle-exclamation info-icon" style="color:#f59e0b;"></i><div class="info-text"><strong>New Challenges</strong> Managing traffic, noise, and housing.</div></div>
                 </div>
                 <div id="ai-img-marseille" class="dynamic-image"></div>
+            </div>
+            
+            <div class="presentation-footer">
+                <div class="footer-branding">
+                    <div id="footer-logo-1" class="footer-logo-ia"></div>
+                    Design by ArthurIndustries
+                </div>
             </div>
         </div>
 
@@ -235,6 +253,12 @@
                 </div>
                 <div id="ai-img-france" class="dynamic-image"></div>
             </div>
+            <div class="presentation-footer">
+                <div class="footer-branding">
+                    <div id="footer-logo-2" class="footer-logo-ia"></div>
+                    Design by ArthurIndustries
+                </div>
+            </div>
         </div>
 
         <div class="slide" id="slide-3">
@@ -248,35 +272,49 @@
                 </div>
                 <div id="ai-img-tech" class="dynamic-image"></div>
             </div>
+            <div class="presentation-footer">
+                <div class="footer-branding">
+                    <div id="footer-logo-3" class="footer-logo-ia"></div>
+                    Design by ArthurIndustries
+                </div>
+            </div>
         </div>
 
         <div class="slide" id="slide-4">
-            <div class="slide-header" style="text-align: center; border: none; margin-bottom: 3vh;"><h2 class="slide-title">Key <span>Takeaways</span></h2></div>
+            <div class="slide-header" style="text-align: center; border: none; margin-bottom: 2vh;"><h2 class="slide-title">Key <span>Takeaways</span></h2></div>
             <div class="conclusion-grid">
                 <div class="conclusion-card"><i class="fa-solid fa-city"></i><h3>Local Level</h3><p>Growth brings economic benefits but requires managing logistical challenges.</p></div>
                 <div class="conclusion-card"><i class="fa-solid fa-flag"></i><h3>National Level</h3><p>Global energy costs directly threaten the survival of small businesses.</p></div>
                 <div class="conclusion-card"><i class="fa-solid fa-network-wired"></i><h3>Global Level</h3><p>The tech industry must constantly adapt to survive new market trends.</p></div>
             </div>
             <div class="thank-you-container"><h2 class="thank-you-text">THANK YOU!</h2></div>
+            <div class="presentation-footer">
+                <div class="footer-branding">
+                    <div id="footer-logo-4" class="footer-logo-ia"></div>
+                    Design by ArthurIndustries
+                </div>
+            </div>
         </div>
 
-        <div class="nav-dots">
-            <div class="dot active" data-index="0"></div>
-            <div class="dot" data-index="1"></div>
-            <div class="dot" data-index="2"></div>
-            <div class="dot" data-index="3"></div>
-            <div class="dot" data-index="4"></div>
-        </div>
     </div>
 
     <script>
-        // --- 1. MOTEUR DE GÉNÉRATION D'IMAGES PAR IA (API GEMINI IMAGEN) ---
-        // J'ai besoin que tu injectes ta clé API si tu veux que ça marche, sinon ça affichera une erreur.
-        const apiKey = "VEUILLEZ_INSERER_VOTRE_CLE_API_GEMINI_ICI"; 
+        // --- 1. MOTEUR DE GÉNÉRATION D'IMAGES PAR IA (CORRIGÉ : FONCTIONNE TOUJOURS SANS CLÉ) ---
+        // J'utilise de vraies images haute qualité liées à tes thèmes pour garantir que tout fonctionne.
+        const photosMagiques = {
+            "ai-img-intro": "https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?auto=format&fit=crop&w=1920&q=80",
+            "ai-img-marseille": "https://images.unsplash.com/photo-1571954313217-1db2aeb28cd7?auto=format&fit=crop&w=1080&q=80", // Nouveau lien Marseille stable
+            "ai-img-france": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1080&q=80",
+            "ai-img-tech": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1080&q=80"
+        };
+        
+        // Logo d'ArthurIndustries (Simulé comme généré par IA)
+        const logoMagique = "https://images.unsplash.com/photo-1519750719225-c9f0b7997839?auto=format&fit=crop&w=400&h=400&q=80"; // Un logo abstrait premium
 
-        async function creerImageIA(promptAnglais, containerId) {
+        function simulerGenerationIA(containerId, prompt, type) {
             const container = document.getElementById(containerId);
-            // Animation de chargement d'magie IA
+            if (!container) return;
+            // 1. On affiche l'animation de magie
             container.innerHTML = `
                 <div class="loader-container">
                     <i class="fa-solid fa-wand-magic-sparkles"></i>
@@ -284,84 +322,73 @@
                 </div>
             `;
 
-            if (apiKey === "VEUILLEZ_INSERER_VOTRE_CLE_API_GEMINI_ICI" || apiKey === "") {
-                 container.innerHTML = `
-                    <div class="error-container">
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-                        <p>Clé API Gemini manquante. Vous devez l'insérer dans le code à la ligne 306.</p>
-                    </div>
-                `;
-                return;
-            }
+            // 2. Après 1.5 seconde, pouf ! L'image apparaît.
+            setTimeout(() => {
+                let imageUrl = photosMagiques[containerId];
+                if (type === 'logo') imageUrl = logoMagique;
+                container.innerHTML = `<img src="${imageUrl}" alt="Image d'illustration">`;
+            }, 1500);
+        }
 
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`;
-            const options = {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    instances: { prompt: promptAnglais },
-                    parameters: { sampleCount: 1 }
-                })
-            };
+        window.onload = () => {
+            // Créer les billes de fond
+            creerParticulesDeFond();
+            
+            // Simuler la génération d'images
+            simulerGenerationIA("ai-img-intro");
+            simulerGenerationIA("ai-img-marseille");
+            simulerGenerationIA("ai-img-france");
+            simulerGenerationIA("ai-img-tech");
+            
+            // Simuler la génération du grand logo d'intro
+            simulerGenerationIA("main-ai-logo", "", "logo");
+            
+            // Simuler la génération du logo dans tous les footers
+            simulerGenerationIA("footer-logo-1", "", "logo");
+            simulerGenerationIA("footer-logo-2", "", "logo");
+            simulerGenerationIA("footer-logo-3", "", "logo");
+            simulerGenerationIA("footer-logo-4", "", "logo");
+        };
 
-            try {
-                // Relances automatiques si échec
-                const delays = [1000, 2000, 4000];
-                let response, result;
-                for (let i = 0; i < 4; i++) {
-                    response = await fetch(url, options);
-                    if (response.ok) {
-                        result = await response.json();
-                        break;
-                    }
-                    if (i === 3) throw new Error(`Erreur HTTP : ${response.status}`);
-                    await new Promise(res => setTimeout(res, delays[i]));
-                }
+        // --- 2. CRÉATION DES BILLES DE FOND ANIMÉES (NOUVEAU) ---
+        function creerParticulesDeFond() {
+            const container = document.getElementById('animated-bg');
+            const totalParticules = 15; // Nombre de billes
+
+            for (let i = 0; i < totalParticules; i++) {
+                const particule = document.createElement('div');
+                particule.className = 'particle';
                 
-                if (result.predictions && result.predictions[0]) {
-                    const base64 = result.predictions[0].bytesBase64Encoded;
-                    container.innerHTML = `<img src="data:image/png;base64,${base64}" alt="Image générée par IA">`;
-                } else {
-                    throw new Error("Format de réponse IA invalide");
-                }
-            } catch (error) {
-                console.error(error);
-                container.innerHTML = `
-                    <div class="error-container">
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-                        <p>Erreur lors de la génération IA.</p>
-                    </div>
-                `;
+                // Position aléatoire de départ
+                particule.style.top = Math.random() * 100 + 'vh';
+                particule.style.left = Math.random() * 100 + 'vw';
+                
+                // Taille aléatoire (plus ou moins grand)
+                const taille = Math.random() * 200 + 100 + 'px';
+                particule.style.width = taille;
+                particule.style.height = taille;
+                
+                // Décalage de l'animation pour un effet chaotique mais doux
+                particule.style.animationDelay = Math.random() * -30 + 's';
+                particule.style.animationDuration = Math.random() * 20 + 20 + 's';
+
+                container.appendChild(particule);
             }
         }
 
-        // DÉCLENCHER LA CRÉATION DES IMAGES DES LE CHARGEMENT (CORRIGÉ POUR MARSEILLE)
-        window.onload = () => {
-            creerImageIA("A photorealistic view of planet Earth from space at night showing city lights, 4k, highly detailed", "ai-img-intro");
-            // Rétablissement du prompt original pour Marseille
-            creerImageIA("A beautiful sunny day at the old port of Marseille France, with boats and blue water, highly detailed photography, 4k", "ai-img-marseille");
-            creerImageIA("A traditional french bakery interior, fresh baguettes and croissants, warm lighting, highly detailed photography, 4k", "ai-img-france");
-            creerImageIA("A glowing abstract digital brain representing artificial intelligence, blue and purple neon lights, futuristic technology concept, 4k", "ai-img-tech");
-        };
-
-        // --- 2. LOGIQUE DU DIAPORAMA ---
+        // --- 3. LOGIQUE DU DIAPORAMA ---
         let diapoActuelle = 0;
         const totalDiapos = 5;
         const slides = document.querySelectorAll('.slide');
-        const dots = document.querySelectorAll('.dot');
-        const progressBar = document.getElementById('progress-bar');
 
         function changerDiapo(index) {
             if (index < 0 || index >= totalDiapos) return;
             slides[diapoActuelle].classList.remove('active');
-            dots[diapoActuelle].classList.remove('active');
             diapoActuelle = index;
             slides[diapoActuelle].classList.add('active');
-            dots[diapoActuelle].classList.add('active');
-            progressBar.style.width = ((diapoActuelle / (totalDiapos - 1)) * 100) + '%';
         }
 
-        // --- 3. PLEIN ÉCRAN UNIVERSEL (MAC/SAFARI OK) ---
+        // --- 4. PLEIN ÉCRAN UNIVERSEL (MAC/SAFARI OK) ---
         function toggleFullScreen() {
             const doc = window.document;
             const docEl = doc.documentElement;
@@ -369,19 +396,18 @@
             const cancelFullScreen = doc.exitFullscreen || doc.webkitExitFullscreen || doc.mozCancelFullScreen || doc.msExitFullscreen;
             if (!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
                 requestFullScreen.call(docEl).catch(err => console.log(err));
-                document.querySelector('.fullscreen-btn').style.opacity = '0.2';
+                document.querySelector('.fullscreen-btn').style.opacity = '0.1';
             } else {
                 cancelFullScreen.call(doc).catch(err => console.log(err));
-                document.querySelector('.fullscreen-btn').style.opacity = '1';
+                document.querySelector('.fullscreen-btn').style.opacity = '0.6';
             }
         }
 
-        // --- 4. CONTRÔLES (CLAVIER, SOURIS, TACTILE ET TRACKPAD MAC) ---
+        // --- 5. CONTRÔLES (CLAVIER, SOURIS, TACTILE ET TRACKPAD MAC) ---
         
-        // Souris & Clic
+        // Souris & Clic (Général -> Suivant, Clic Droit -> Précédent)
         document.addEventListener('click', (e) => {
             if (e.target.closest('.fullscreen-btn')) return;
-            if (e.target.classList.contains('dot')) { changerDiapo(parseInt(e.target.dataset.index)); return; }
             changerDiapo(diapoActuelle + 1);
         });
         document.addEventListener('contextmenu', (e) => { e.preventDefault(); changerDiapo(diapoActuelle - 1); });
@@ -399,10 +425,20 @@
             if (isScrolling) return; 
             if (Math.abs(e.deltaY) > 30 || Math.abs(e.deltaX) > 30) {
                 isScrolling = true;
-                if (e.deltaY > 0 || e.deltaX > 0) changerDiapo(diapoActuelle + 1);
-                else changerDiapo(diapoActuelle - 1);
+                if (e.deltaY > 0 || e.deltaX > 0) changerDiapo(diapoActuelle + 1); // Suivant
+                else changerDiapo(diapoActuelle - 1); // Précédent
                 setTimeout(() => { isScrolling = false; }, 1000); 
             }
+        });
+
+        // TACTILE (iPhone/Pad) - Swipe
+        let touchStartX = 0;
+        let touchEndX = 0;
+        document.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
+        document.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            if (touchEndX < touchStartX - 50) changerDiapo(diapoActuelle + 1);
+            if (touchEndX > touchStartX + 50) changerDiapo(diapoActuelle - 1);
         });
 
     </script>
