@@ -11,503 +11,280 @@
 
     <style>
         /* --- CONFIGURATION GLOBALE --- */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: #0b1120;
             color: #f8fafc;
             overflow: hidden; 
-            user-select: none; /* Empêche de surligner le texte par erreur en cliquant */
+            user-select: none; 
             width: 100vw;
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: radial-gradient(circle at 50% 50%, #111827 0%, #0b1120 100%);
+            position: relative;
         }
 
-        /* --- BARRE DE PROGRESSION --- */
-        #progress-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 6px;
-            background: linear-gradient(90deg, #06b6d4, #3b82f6);
-            width: 0%;
-            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 100;
-            box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
-        }
-
-        /* Indicateur pour le présentateur (discret) */
-        .presenter-hint {
+        /* --- FOND ANIMÉ ULTRA-MODERNE (ORBES FLOTTANTES) --- */
+        .animated-bg {
             position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 0.9vw;
-            color: rgba(255,255,255,0.2);
-            z-index: 50;
-            pointer-events: none;
+            top: 0; left: 0; width: 100%; height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            background: #0b1120;
         }
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.5;
+            animation: float 20s infinite ease-in-out alternate;
+        }
+        .orb-1 { width: 500px; height: 500px; background: rgba(6, 182, 212, 0.3); top: -100px; left: -100px; animation-delay: 0s; }
+        .orb-2 { width: 600px; height: 600px; background: rgba(59, 130, 246, 0.2); bottom: -200px; right: -100px; animation-delay: -5s; }
+        .orb-3 { width: 400px; height: 400px; background: rgba(245, 158, 11, 0.15); top: 30%; left: 40%; animation-delay: -10s; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100px, 50px) scale(1.2); }
+        }
+
+        /* --- UI ELEMENTS --- */
+        #progress-bar {
+            position: fixed; top: 0; left: 0; height: 6px;
+            background: linear-gradient(90deg, #06b6d4, #3b82f6);
+            width: 0%; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 100; box-shadow: 0 0 15px rgba(6, 182, 212, 0.8);
+        }
+
+        /* Bouton Plein Écran Universel */
+        .fullscreen-btn {
+            position: absolute; top: 20px; right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white; padding: 10px 15px; border-radius: 10px;
+            cursor: pointer; z-index: 100; font-family: inherit;
+            backdrop-filter: blur(10px); transition: 0.3s;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .fullscreen-btn:hover { background: rgba(255, 255, 255, 0.2); transform: scale(1.05); }
 
         .presentation-screen {
-            width: 100vw;
-            height: 100vh;
-            position: relative;
+            width: 100vw; height: 100vh; position: relative; z-index: 1;
         }
 
         /* --- DIAPOSITIVES --- */
         .slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            /* Le padding s'adapte à l'écran */
-            padding: 5vh 6vw; 
-            display: flex;
-            flex-direction: column;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-            transform: translateY(30px) scale(0.95);
-            z-index: 1;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            padding: 5vh 6vw; display: flex; flex-direction: column;
+            opacity: 0; visibility: hidden;
+            /* Effet 3D lors du changement de slide */
+            transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            transform: translateY(40px) scale(0.92) perspective(1000px) rotateX(5deg);
         }
 
         .slide.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0) scale(1);
+            opacity: 1; visibility: visible;
+            transform: translateY(0) scale(1) perspective(1000px) rotateX(0deg);
             z-index: 10;
         }
 
         /* --- EN-TÊTE --- */
-        .slide-header {
-            margin-bottom: 3vh;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 1.5vh;
-        }
-
-        .slide-title {
-            font-size: clamp(2rem, 3.5vw, 4rem);
-            font-weight: 900;
-            letter-spacing: -1px;
-            text-transform: uppercase;
-        }
-
-        .slide-title span { color: #06b6d4; }
+        .slide-header { margin-bottom: 3vh; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 1.5vh; }
+        .slide-title { font-size: clamp(2rem, 3.5vw, 4rem); font-weight: 900; letter-spacing: -1px; text-transform: uppercase; text-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        .slide-title span { background: -webkit-linear-gradient(#06b6d4, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
         /* --- DISPOSITION --- */
-        .slide-content {
-            display: grid;
-            /* Si l'écran est très étroit (iPhone vertical), on passe en 1 colonne, sinon 2 colonnes (PC) */
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 4vw;
-            flex-grow: 1;
-            align-items: center;
-        }
+        .slide-content { display: grid; grid-template-columns: 1fr 1fr; gap: 4vw; flex-grow: 1; align-items: center; }
 
-        /* --- TEXTE (GAUCHE) & ANIMATIONS EN CASCADE --- */
-        .text-column {
-            display: flex;
-            flex-direction: column;
-            gap: 2.5vh;
-        }
+        /* --- CARTES "GLASSMORPHISM" --- */
+        .text-column { display: flex; flex-direction: column; gap: 2.5vh; }
 
         .info-card {
-            background: rgba(30, 41, 59, 0.6); 
+            background: rgba(15, 23, 42, 0.4); 
+            border: 1px solid rgba(255, 255, 255, 0.05);
             border-left: 8px solid #06b6d4;
-            border-radius: 0 16px 16px 0;
-            padding: 2vh 2vw;
-            display: flex;
-            align-items: center;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease, background 0.3s ease;
-            opacity: 0;
-            transform: translateX(-30px);
+            border-radius: 16px;
+            padding: 2vh 2vw; display: flex; align-items: center;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 0; transform: translateX(-40px);
         }
 
-        .slide.active .info-card { animation: slideInRight 0.6s forwards; }
+        .slide.active .info-card { animation: slideInRight 0.7s forwards; }
         .slide.active .info-card:nth-child(1) { animation-delay: 0.2s; }
         .slide.active .info-card:nth-child(2) { animation-delay: 0.4s; }
         .slide.active .info-card:nth-child(3) { animation-delay: 0.6s; }
         .slide.active .info-card:nth-child(4) { animation-delay: 0.8s; }
 
-        @keyframes slideInRight {
-            to { opacity: 1; transform: translateX(0); }
-        }
+        @keyframes slideInRight { to { opacity: 1; transform: translateX(0); } }
 
         .info-card.warning { border-left-color: #f59e0b; }
-        .info-card:hover { background: rgba(30, 41, 59, 0.9); }
+        .info-card:hover { transform: translateX(15px) scale(1.03); background: rgba(30, 41, 59, 0.8); border-color: rgba(6, 182, 212, 0.4); box-shadow: 0 15px 40px rgba(6, 182, 212, 0.2); }
 
-        .info-icon {
-            font-size: clamp(1.5rem, 3vw, 3rem);
-            color: #f8fafc;
-            width: 5vw;
-            min-width: 40px;
-            text-align: center;
-            margin-right: 1.5vw;
-        }
-
-        .info-text {
-            font-size: clamp(1rem, 1.8vw, 2rem);
-            line-height: 1.4;
-            color: #cbd5e1;
-        }
-
-        .info-text strong {
-            color: #ffffff;
-            font-weight: 800;
-            font-size: clamp(1.2rem, 2.2vw, 2.5rem);
-            display: block;
-            margin-bottom: 5px;
-        }
+        .info-icon { font-size: clamp(1.5rem, 3vw, 3rem); color: #f8fafc; width: 5vw; min-width: 40px; text-align: center; margin-right: 1.5vw; text-shadow: 0 0 15px rgba(255,255,255,0.3); }
+        .info-text { font-size: clamp(1rem, 1.8vw, 2rem); line-height: 1.4; color: #cbd5e1; }
+        .info-text strong { color: #ffffff; font-weight: 800; font-size: clamp(1.2rem, 2.2vw, 2.5rem); display: block; margin-bottom: 5px; }
 
         /* --- CONTENEUR D'IMAGE --- */
         .dynamic-image {
-            width: 100%;
-            height: 60vh; 
-            border-radius: 24px;
-            overflow: hidden;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.1);
-            background: linear-gradient(135deg, #1e293b, #0f172a);
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 100%; height: 60vh; border-radius: 24px; overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255,255,255,0.1);
+            background: linear-gradient(135deg, #1e293b, #0f172a); position: relative;
+            display: flex; align-items: center; justify-content: center;
         }
 
         .dynamic-image img, .intro-bg-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-            position: absolute;
-            top: 0; left: 0;
-            animation: fadeInImage 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%; height: 100%; object-fit: cover; display: block; position: absolute;
+            top: 0; left: 0; animation: fadeInImage 1.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         @keyframes fadeInImage {
-            from { opacity: 0; transform: scale(1.1); filter: blur(10px); }
+            from { opacity: 0; transform: scale(1.1); filter: blur(15px); }
             to { opacity: 1; transform: scale(1); filter: blur(0); }
         }
 
         /* --- ÉTATS DE CHARGEMENT --- */
-        .loader-container {
-            text-align: center;
-            color: #06b6d4;
-            font-size: clamp(1rem, 2vw, 2rem);
-            font-weight: 600;
-            animation: pulse 1.5s infinite;
-        }
-
-        .loader-container i {
-            font-size: clamp(3rem, 5vw, 6rem);
-            margin-bottom: 20px;
-            display: block;
-            background: -webkit-linear-gradient(#06b6d4, #3b82f6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
+        .loader-container { text-align: center; color: #06b6d4; font-size: clamp(1rem, 2vw, 2rem); font-weight: 600; animation: pulse 1.5s infinite; }
+        .loader-container i { font-size: clamp(3rem, 5vw, 6rem); margin-bottom: 20px; display: block; background: -webkit-linear-gradient(#06b6d4, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 10px rgba(6,182,212,0.5)); }
+        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(0.95); } }
 
         /* --- DIAPO 1 : INTRO --- */
         .slide-intro { justify-content: center; align-items: center; text-align: center; padding: 0; }
-        .intro-bg-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.4; }
-        .intro-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, rgba(11, 17, 32, 0.6) 0%, rgba(11, 17, 32, 0.95) 100%); z-index: 1; }
+        .intro-bg-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.5; }
+        .intro-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, rgba(11, 17, 32, 0.5) 0%, rgba(11, 17, 32, 0.95) 100%); z-index: 1; }
         .intro-content { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; }
 
-        .intro-badge {
-            background: linear-gradient(90deg, #06b6d4, #3b82f6);
-            color: #fff;
-            padding: 10px 30px;
-            border-radius: 50px;
-            font-weight: 900;
-            font-size: clamp(0.9rem, 1.5vw, 2rem);
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            margin-bottom: 4vh;
-            box-shadow: 0 10px 20px rgba(6, 182, 212, 0.3);
-        }
-
-        .intro-title-text {
-            font-size: clamp(3rem, 7vw, 9rem);
-            font-weight: 900;
-            line-height: 1.1;
-            margin-bottom: 2vh;
-            color: #ffffff;
-            text-shadow: 0 10px 30px rgba(0,0,0,0.8);
-        }
-
-        .intro-title-text span {
-            background: -webkit-linear-gradient(#06b6d4, #3b82f6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .intro-subtitle-text {
-            font-size: clamp(1.2rem, 2.5vw, 3.5rem);
-            color: #cbd5e1;
-            margin-bottom: 6vh;
-            font-weight: 600;
-            letter-spacing: 1px;
-        }
-
-        .presenters-box {
-            font-size: clamp(1rem, 2vw, 2.5rem);
-            color: #f59e0b;
-            font-weight: 800;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 15px 40px;
-            border-radius: 100px;
-            border: 2px solid rgba(245, 158, 11, 0.4);
-            backdrop-filter: blur(5px);
-        }
+        .intro-badge { background: linear-gradient(90deg, #06b6d4, #3b82f6); color: #fff; padding: 10px 30px; border-radius: 50px; font-weight: 900; font-size: clamp(0.9rem, 1.5vw, 2rem); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 4vh; box-shadow: 0 10px 30px rgba(6, 182, 212, 0.4); }
+        .intro-title-text { font-size: clamp(3rem, 7vw, 9rem); font-weight: 900; line-height: 1.1; margin-bottom: 2vh; color: #ffffff; text-shadow: 0 10px 40px rgba(0,0,0,0.8); }
+        .intro-title-text span { background: -webkit-linear-gradient(#06b6d4, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .intro-subtitle-text { font-size: clamp(1.2rem, 2.5vw, 3.5rem); color: #cbd5e1; margin-bottom: 6vh; font-weight: 600; letter-spacing: 1px; }
+        .presenters-box { font-size: clamp(1rem, 2vw, 2.5rem); color: #f59e0b; font-weight: 800; background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(245, 158, 11, 0.3); padding: 15px 40px; border-radius: 100px; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
 
         /* --- DIAPO 5 : CONCLUSION --- */
-        .conclusion-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 3vw;
-            margin-bottom: 6vh;
-            width: 100%;
-        }
-
-        .conclusion-card {
-            background: rgba(30, 41, 59, 0.5);
-            border-top: 6px solid #06b6d4;
-            border-radius: 20px;
-            padding: 3vw;
-            text-align: center;
-            opacity: 0;
-            transform: translateY(30px);
-        }
-
-        .slide.active .conclusion-card { animation: slideUp 0.6s forwards; }
+        .conclusion-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3vw; margin-bottom: 6vh; width: 100%; }
+        .conclusion-card { background: rgba(15, 23, 42, 0.4); border-top: 6px solid #06b6d4; border-radius: 20px; padding: 3vw; text-align: center; backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); opacity: 0; transform: translateY(40px); }
+        .slide.active .conclusion-card { animation: slideUp 0.8s forwards cubic-bezier(0.25, 1, 0.5, 1); }
         .slide.active .conclusion-card:nth-child(1) { animation-delay: 0.3s; }
         .slide.active .conclusion-card:nth-child(2) { animation-delay: 0.5s; border-top-color: #f59e0b; }
         .slide.active .conclusion-card:nth-child(3) { animation-delay: 0.7s; border-top-color: #3b82f6; }
-
         @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
 
-        .conclusion-card i {
-            font-size: clamp(2rem, 4vw, 5rem);
-            color: #ffffff;
-            margin-bottom: 3vh;
-            background: #06b6d4;
-            width: 6vw; height: 6vw;
-            min-width: 60px; min-height: 60px;
-            display: inline-flex;
-            align-items: center; justify-content: center;
-            border-radius: 50%;
-        }
-
-        .conclusion-card:nth-child(2) i { background: #f59e0b; }
-        .conclusion-card:nth-child(3) i { background: #3b82f6; }
-
+        .conclusion-card i { font-size: clamp(2rem, 4vw, 5rem); color: #ffffff; margin-bottom: 3vh; background: #06b6d4; width: 6vw; height: 6vw; min-width: 60px; min-height: 60px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 10px 20px rgba(6,182,212,0.4); }
+        .conclusion-card:nth-child(2) i { background: #f59e0b; box-shadow: 0 10px 20px rgba(245,158,11,0.4); }
+        .conclusion-card:nth-child(3) i { background: #3b82f6; box-shadow: 0 10px 20px rgba(59,130,246,0.4); }
         .conclusion-card h3 { font-size: clamp(1.2rem, 2.2vw, 3rem); margin-bottom: 2vh; color: #ffffff; font-weight: 800; }
         .conclusion-card p { font-size: clamp(0.9rem, 1.5vw, 2rem); color: #cbd5e1; line-height: 1.5; }
 
         .thank-you-container { text-align: center; margin-top: auto; opacity: 0; transform: scale(0.8); }
-        .slide.active .thank-you-container { animation: popIn 0.8s forwards; animation-delay: 1.2s; }
+        .slide.active .thank-you-container { animation: popIn 1s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275); animation-delay: 1.2s; }
         @keyframes popIn { to { opacity: 1; transform: scale(1); } }
+        .thank-you-text { font-size: clamp(4rem, 7vw, 9rem); font-weight: 900; color: #f59e0b; text-shadow: 0 10px 40px rgba(245, 158, 11, 0.6); animation: pulse-thankyou 2s infinite; }
 
-        .thank-you-text { font-size: clamp(4rem, 7vw, 9rem); font-weight: 900; color: #f59e0b; text-shadow: 0 10px 30px rgba(245, 158, 11, 0.4); animation: pulse-thankyou 2s infinite; }
-
-        /* --- NAVIGATION EN BAS --- */
-        .nav-dots {
-            position: absolute;
-            bottom: 3vh;
-            left: 0;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            z-index: 20;
-        }
-
-        .dot {
-            width: 16px; height: 16px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .dot.active { background: #06b6d4; transform: scale(1.5); box-shadow: 0 0 20px #06b6d4; }
+        /* --- NAVIGATION --- */
+        .nav-dots { position: absolute; bottom: 3vh; left: 0; width: 100%; display: flex; justify-content: center; gap: 20px; z-index: 20; }
+        .dot { width: 16px; height: 16px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); cursor: pointer; transition: all 0.4s; }
+        .dot.active { background: #06b6d4; transform: scale(1.6); box-shadow: 0 0 20px #06b6d4; }
     </style>
 </head>
 <body>
 
+    <div class="animated-bg">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
     <div id="progress-bar"></div>
-    <div class="presenter-hint">Pressez 'F' pour le Plein Écran</div>
+    
+    <button class="fullscreen-btn" onclick="toggleFullScreen()">
+        <i class="fa-solid fa-expand"></i> Plein Écran (F)
+    </button>
 
     <div class="presentation-screen" id="screen">
 
         <div class="slide slide-intro active" id="slide-0">
             <div id="ai-img-intro" class="intro-bg-container"></div>
             <div class="intro-overlay"></div>
-            
             <div class="intro-content">
                 <div class="intro-badge">Special Edition</div>
                 <h1 class="intro-title-text">Global <span>Business</span> News</h1>
                 <p class="intro-subtitle-text">Local, National, and International Insights</p>
-                <div class="presenters-box">
-                    <i class="fa-solid fa-microphone-lines" style="margin-right: 15px;"></i> 
-                    Presented by: Ilyana, Elsa & Anna
-                </div>
+                <div class="presenters-box"><i class="fa-solid fa-microphone-lines" style="margin-right: 15px;"></i> Presented by: Ilyana, Elsa & Anna</div>
             </div>
         </div>
 
         <div class="slide" id="slide-1">
-            <div class="slide-header">
-                <h2 class="slide-title">Local News: <span>Marseille</span></h2>
-            </div>
+            <div class="slide-header"><h2 class="slide-title">Local News: <span>Marseille</span></h2></div>
             <div class="slide-content">
                 <div class="text-column">
-                    <div class="info-card">
-                        <i class="fa-solid fa-arrow-trend-up info-icon"></i>
-                        <div class="info-text"><strong>Tourism Boom</strong> Record numbers of visitors this year.</div>
-                    </div>
-                    <div class="info-card">
-                        <i class="fa-solid fa-hotel info-icon"></i>
-                        <div class="info-text"><strong>Business Growth</strong> Hotels and restaurants are full.</div>
-                    </div>
-                    <div class="info-card">
-                        <i class="fa-solid fa-briefcase info-icon"></i>
-                        <div class="info-text"><strong>Job Creation</strong> Strong hiring in the service sector.</div>
-                    </div>
-                    <div class="info-card warning">
-                        <i class="fa-solid fa-triangle-exclamation info-icon" style="color:#f59e0b;"></i>
-                        <div class="info-text"><strong>New Challenges</strong> Managing traffic, noise, and housing.</div>
-                    </div>
+                    <div class="info-card"><i class="fa-solid fa-arrow-trend-up info-icon"></i><div class="info-text"><strong>Tourism Boom</strong> Record numbers of visitors this year.</div></div>
+                    <div class="info-card"><i class="fa-solid fa-hotel info-icon"></i><div class="info-text"><strong>Business Growth</strong> Hotels and restaurants are full.</div></div>
+                    <div class="info-card"><i class="fa-solid fa-briefcase info-icon"></i><div class="info-text"><strong>Job Creation</strong> Strong hiring in the service sector.</div></div>
+                    <div class="info-card warning"><i class="fa-solid fa-triangle-exclamation info-icon" style="color:#f59e0b;"></i><div class="info-text"><strong>New Challenges</strong> Managing traffic, noise, and housing.</div></div>
                 </div>
                 <div id="ai-img-marseille" class="dynamic-image"></div>
             </div>
         </div>
 
         <div class="slide" id="slide-2">
-            <div class="slide-header">
-                <h2 class="slide-title">National News: <span>France</span></h2>
-            </div>
+            <div class="slide-header"><h2 class="slide-title">National News: <span>France</span></h2></div>
             <div class="slide-content">
                 <div class="text-column">
-                    <div class="info-card warning">
-                        <i class="fa-solid fa-bolt info-icon" style="color:#f59e0b;"></i>
-                        <div class="info-text"><strong>Energy Crisis</strong> Soaring costs for electricity and gas.</div>
-                    </div>
-                    <div class="info-card">
-                        <i class="fa-solid fa-shop info-icon"></i>
-                        <div class="info-text"><strong>Small Businesses</strong> Bakeries struggle to pay high bills.</div>
-                    </div>
-                    <div class="info-card">
-                        <i class="fa-solid fa-tag info-icon"></i>
-                        <div class="info-text"><strong>Inflation</strong> Increased prices for the final customers.</div>
-                    </div>
-                    <div class="info-card">
-                        <i class="fa-solid fa-building-columns info-icon"></i>
-                        <div class="info-text"><strong>Government Help</strong> Financial support is slow and complex.</div>
-                    </div>
+                    <div class="info-card warning"><i class="fa-solid fa-bolt info-icon" style="color:#f59e0b;"></i><div class="info-text"><strong>Energy Crisis</strong> Soaring costs for electricity and gas.</div></div>
+                    <div class="info-card"><i class="fa-solid fa-shop info-icon"></i><div class="info-text"><strong>Small Businesses</strong> Bakeries struggle to pay high bills.</div></div>
+                    <div class="info-card"><i class="fa-solid fa-tag info-icon"></i><div class="info-text"><strong>Inflation</strong> Increased prices for the final customers.</div></div>
+                    <div class="info-card"><i class="fa-solid fa-building-columns info-icon"></i><div class="info-text"><strong>Government Help</strong> Financial support is slow and complex.</div></div>
                 </div>
                 <div id="ai-img-france" class="dynamic-image"></div>
             </div>
         </div>
 
         <div class="slide" id="slide-3">
-            <div class="slide-header">
-                <h2 class="slide-title">Global News: <span>Tech Industry</span></h2>
-            </div>
+            <div class="slide-header"><h2 class="slide-title">Global News: <span>Tech Industry</span></h2></div>
             <div class="slide-content">
                 <div class="text-column">
-                    <div class="info-card warning">
-                        <i class="fa-solid fa-users-slash info-icon" style="color:#f59e0b;"></i>
-                        <div class="info-text"><strong>Mass Layoffs</strong> Giant tech companies reduce their staff.</div>
-                    </div>
-                    <div class="info-card">
-                        <i class="fa-solid fa-chart-line-down info-icon"></i>
-                        <div class="info-text"><strong>New Strategy</strong> Strict focus on cost reduction & profits.</div>
-                    </div>
-                    <div class="info-card">
-                        <i class="fa-solid fa-microchip info-icon"></i>
-                        <div class="info-text"><strong>The A.I. Pivot</strong> Massive investments in Artificial Intelligence.</div>
-                    </div>
-                    <div class="info-card">
-                        <i class="fa-solid fa-earth-americas info-icon"></i>
-                        <div class="info-text"><strong>Workforce Impact</strong> High uncertainty for workers globally.</div>
-                    </div>
+                    <div class="info-card warning"><i class="fa-solid fa-users-slash info-icon" style="color:#f59e0b;"></i><div class="info-text"><strong>Mass Layoffs</strong> Giant tech companies reduce their staff.</div></div>
+                    <div class="info-card"><i class="fa-solid fa-chart-line-down info-icon"></i><div class="info-text"><strong>New Strategy</strong> Strict focus on cost reduction & profits.</div></div>
+                    <div class="info-card"><i class="fa-solid fa-microchip info-icon"></i><div class="info-text"><strong>The A.I. Pivot</strong> Massive investments in Artificial Intelligence.</div></div>
+                    <div class="info-card"><i class="fa-solid fa-earth-americas info-icon"></i><div class="info-text"><strong>Workforce Impact</strong> High uncertainty for workers globally.</div></div>
                 </div>
                 <div id="ai-img-tech" class="dynamic-image"></div>
             </div>
         </div>
 
         <div class="slide" id="slide-4">
-            <div class="slide-header" style="text-align: center; border: none; margin-bottom: 3vh;">
-                <h2 class="slide-title">Key <span>Takeaways</span></h2>
-            </div>
-            
+            <div class="slide-header" style="text-align: center; border: none; margin-bottom: 3vh;"><h2 class="slide-title">Key <span>Takeaways</span></h2></div>
             <div class="conclusion-grid">
-                <div class="conclusion-card">
-                    <i class="fa-solid fa-city"></i>
-                    <h3>Local Level</h3>
-                    <p>Growth brings economic benefits but requires managing logistical challenges.</p>
-                </div>
-                <div class="conclusion-card">
-                    <i class="fa-solid fa-flag"></i>
-                    <h3>National Level</h3>
-                    <p>Global energy costs directly threaten the survival of small businesses.</p>
-                </div>
-                <div class="conclusion-card">
-                    <i class="fa-solid fa-network-wired"></i>
-                    <h3>Global Level</h3>
-                    <p>The tech industry must constantly adapt to survive new market trends.</p>
-                </div>
+                <div class="conclusion-card"><i class="fa-solid fa-city"></i><h3>Local Level</h3><p>Growth brings economic benefits but requires managing logistical challenges.</p></div>
+                <div class="conclusion-card"><i class="fa-solid fa-flag"></i><h3>National Level</h3><p>Global energy costs directly threaten the survival of small businesses.</p></div>
+                <div class="conclusion-card"><i class="fa-solid fa-network-wired"></i><h3>Global Level</h3><p>The tech industry must constantly adapt to survive new market trends.</p></div>
             </div>
-
-            <div class="thank-you-container">
-                <h2 class="thank-you-text">THANK YOU!</h2>
-            </div>
+            <div class="thank-you-container"><h2 class="thank-you-text">THANK YOU!</h2></div>
         </div>
 
         <div class="nav-dots">
-            <div class="dot active" data-index="0"></div>
-            <div class="dot" data-index="1"></div>
-            <div class="dot" data-index="2"></div>
-            <div class="dot" data-index="3"></div>
-            <div class="dot" data-index="4"></div>
+            <div class="dot active" data-index="0"></div><div class="dot" data-index="1"></div>
+            <div class="dot" data-index="2"></div><div class="dot" data-index="3"></div><div class="dot" data-index="4"></div>
         </div>
-
     </div>
 
     <script>
-        // --- GESTION DES IMAGES (SIMULATION IA 100% SÉCURISÉE) ---
+        // --- 1. NOUVELLES IMAGES (CORRIGÉES & SÉCURISÉES) ---
         const imagesMagiques = {
-            "ai-img-intro": "https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?q=80&w=1920&auto=format&fit=crop",
-            "ai-img-marseille": "https://images.unsplash.com/photo-1562921509-24b89eb0df84?q=80&w=1080&auto=format&fit=crop",
-            "ai-img-france": "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=1080&auto=format&fit=crop",
-            "ai-img-tech": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1080&auto=format&fit=crop"
+            "ai-img-intro": "https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?auto=format&fit=crop&w=1920&q=80",
+            "ai-img-marseille": "https://images.unsplash.com/photo-1571954313217-1db2aeb28cd7?auto=format&fit=crop&w=1080&q=80", // Nouveau lien Marseille
+            "ai-img-france": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1080&q=80",
+            "ai-img-tech": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1080&q=80" // Image tech plus percutante
         };
 
         function simulerGenerationIA(containerId) {
             const container = document.getElementById(containerId);
-            container.innerHTML = `
-                <div class="loader-container">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i>
-                    <p>Génération IA en cours...</p>
-                </div>
-            `;
-            setTimeout(() => {
-                container.innerHTML = `<img src="${imagesMagiques[containerId]}" alt="Image d'illustration">`;
-            }, 1200);
+            container.innerHTML = `<div class="loader-container"><i class="fa-solid fa-wand-magic-sparkles"></i><p>Génération IA en cours...</p></div>`;
+            setTimeout(() => { container.innerHTML = `<img src="${imagesMagiques[containerId]}" alt="Image d'illustration">`; }, 1200);
         }
 
         window.onload = () => {
@@ -517,76 +294,73 @@
             simulerGenerationIA("ai-img-tech");
         };
 
-        // --- LOGIQUE DU DIAPORAMA ---
+        // --- 2. LOGIQUE DU DIAPORAMA ---
         let diapoActuelle = 0;
         const totalDiapos = 5;
         const slides = document.querySelectorAll('.slide');
         const dots = document.querySelectorAll('.dot');
         const progressBar = document.getElementById('progress-bar');
 
-        function mettreAJourProgression() {
-            const pourcentage = (diapoActuelle / (totalDiapos - 1)) * 100;
-            progressBar.style.width = pourcentage + '%';
-        }
-
         function changerDiapo(index) {
             if (index < 0 || index >= totalDiapos) return;
-
             slides[diapoActuelle].classList.remove('active');
             dots[diapoActuelle].classList.remove('active');
-
             diapoActuelle = index;
             slides[diapoActuelle].classList.add('active');
             dots[diapoActuelle].classList.add('active');
-            
-            mettreAJourProgression();
+            progressBar.style.width = ((diapoActuelle / (totalDiapos - 1)) * 100) + '%';
         }
 
-        // --- CONTRÔLES SOURIS (ORDINATEUR) ---
-        // Clic Gauche = Suivant, Clic Droit = Précédent
-        document.addEventListener('click', (e) => {
-            // Si on clique sur un petit point en bas, on va à cette diapo spécifique
-            if (e.target.classList.contains('dot')) {
-                changerDiapo(parseInt(e.target.dataset.index));
-                return;
+        // --- 3. PLEIN ÉCRAN (FIX MAC/SAFARI) ---
+        function toggleFullScreen() {
+            const doc = window.document;
+            const docEl = doc.documentElement;
+
+            const requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+            const cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+            if (!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+                requestFullScreen.call(docEl);
+                document.querySelector('.fullscreen-btn').style.opacity = '0.2'; // Rend le bouton très discret
+            } else {
+                cancelFullScreen.call(doc);
+                document.querySelector('.fullscreen-btn').style.opacity = '1';
             }
+        }
+
+        // --- 4. CONTRÔLES (CLAVIER, SOURIS, ET TRACKPAD MAC) ---
+        
+        // Souris classique
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.fullscreen-btn')) return; // Ne pas changer de diapo si on clique sur Plein Écran
+            if (e.target.classList.contains('dot')) { changerDiapo(parseInt(e.target.dataset.index)); return; }
             changerDiapo(diapoActuelle + 1);
         });
 
-        document.addEventListener('contextmenu', (e) => {
-            e.preventDefault(); // Empêche le menu moche de s'afficher
-            changerDiapo(diapoActuelle - 1);
-        });
+        document.addEventListener('contextmenu', (e) => { e.preventDefault(); changerDiapo(diapoActuelle - 1); });
 
-        // --- CONTRÔLES CLAVIER & PLEIN ÉCRAN (ORDINATEUR) ---
+        // Clavier
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') changerDiapo(diapoActuelle + 1);
             else if (e.key === 'ArrowLeft') changerDiapo(diapoActuelle - 1);
+            else if (e.key === 'f' || e.key === 'F') toggleFullScreen();
+        });
+
+        // TRACKPAD (Mac) - Anti-défilement frénétique
+        let isScrolling = false;
+        window.addEventListener('wheel', (e) => {
+            if (isScrolling) return; 
             
-            // Touche 'F' pour le mode Plein Écran
-            else if (e.key === 'f' || e.key === 'F') {
-                if (!document.fullscreenElement) {
-                    document.documentElement.requestFullscreen().catch(err => console.log(err));
-                    document.querySelector('.presenter-hint').style.display = 'none'; // Cache le texte d'aide
-                } else {
-                    document.exitFullscreen();
-                }
+            // Sensibilité du trackpad (pour ne pas déclencher au moindre frôlement)
+            if (Math.abs(e.deltaY) > 30 || Math.abs(e.deltaX) > 30) {
+                isScrolling = true;
+                if (e.deltaY > 0 || e.deltaX > 0) changerDiapo(diapoActuelle + 1); // Défilement bas/droite
+                else changerDiapo(diapoActuelle - 1); // Défilement haut/gauche
+                
+                // Bloque le trackpad pendant 1 seconde le temps que l'animation se fasse
+                setTimeout(() => { isScrolling = false; }, 1000); 
             }
         });
-
-        // --- CONTRÔLES TACTILES (IPHONE) ---
-        let touchStartX = 0;
-        let touchEndX = 0;
-
-        document.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
-        document.addEventListener('touchend', e => {
-            touchEndX = e.changedTouches[0].screenX;
-            if (touchEndX < touchStartX - 40) changerDiapo(diapoActuelle + 1); // Swipe gauche
-            else if (touchEndX > touchStartX + 40) changerDiapo(diapoActuelle - 1); // Swipe droite
-        });
-
-        // Initialiser la barre au chargement
-        mettreAJourProgression();
 
     </script>
 </body>
