@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Global Business News - ArthurIndustries Keynote</title>
+    <title>Global Business News - Keynote by ArthurIndustries</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
@@ -15,23 +15,18 @@
            ========================================= */
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
         
-        /* Force le plein écran absolu sans void blanc sur Safari Mac */
+        /* Force le plein écran absolu sans scrolling */
         html, body {
-            height: 100%; width: 100%;
-            overflow: hidden;
+            height: 100vh; width: 100vw; overflow: hidden;
             background-color: #010409;
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Outfit', sans-serif;
             color: #f8fafc; user-select: none;
-            position: fixed; /* Fix pour Safari Mac */
         }
 
-        body {
-            display: flex; flex-direction: column; 
-            justify-content: flex-start; align-items: center; /* Calé en haut */
-        }
+        body { display: flex; align-items: center; justify-content: center; position: relative; }
 
         /* =========================================
-           2. FOND ANIMÉ (BILLES/ORBES) - RETOUR
+           2. FOND ANIMÉ (BILLES/ORBES) - NOUVEAU
            ========================================= */
         #cyber-background {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -41,11 +36,11 @@
             position: absolute; border-radius: 50%;
             background: linear-gradient(135deg, rgba(6, 182, 212, 0.4), rgba(59, 130, 246, 0.1));
             filter: blur(15px); opacity: 0.5;
-            animation: floatOrb 25s infinite linear alternate ease-in-out;
+            animation: floatOrb 30s infinite linear alternate ease-in-out;
         }
         @keyframes floatOrb {
             0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(150px, 100px) scale(1.3); }
+            100% { transform: translate(100px, 80px) scale(1.3); }
         }
 
         /* =========================================
@@ -54,7 +49,7 @@
         #progress-bar {
             position: fixed; top: 0; left: 0; height: 5px;
             background: linear-gradient(90deg, #00f2fe, #4facfe);
-            width: 0%; transition: width 0.4s ease-out;
+            width: 0%; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 100; box-shadow: 0 0 15px rgba(0, 242, 254, 0.8);
         }
 
@@ -75,12 +70,11 @@
 
         .slide {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            padding: 4vh 6vw 8vh 6vw; /* Padding bas pour le footer */
-            display: flex; flex-direction: column;
+            padding: 5vh 6vw; display: flex; flex-direction: column;
             opacity: 0; visibility: hidden;
-            /* Transition fluide sans tremblements */
-            transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.2, 1, 0.2, 1);
-            transform: translate3d(0, 20px, 0);
+            /* Transition fluide 3D digne d'une Keynote */
+            transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+            transform: translate3d(0, 30px, 0);
             will-change: opacity, transform;
         }
 
@@ -132,8 +126,8 @@
         }
         .intro-title-text { font-size: clamp(2.5rem, 6vw, 8rem); font-weight: 900; line-height: 1.1; margin-bottom: 2vh; text-shadow: 0 5px 30px rgba(0,0,0,0.8); }
         .intro-title-text span { background: linear-gradient(90deg, #00f2fe, #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .intro-subtitle-text { font-size: clamp(1rem, 2vw, 2.5rem); color: #cbd5e1; margin-bottom: 5vh; font-weight: 600; text-shadow: 0 3px 15px rgba(0,0,0,0.8); }
-        .presenters-box { font-size: clamp(0.9rem, 1.6vw, 2rem); color: #f59e0b; font-weight: 800; background: rgba(0, 0, 0, 0.6); padding: 12px 35px; border-radius: 100px; border: 2px solid rgba(245, 158, 11, 0.3); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .intro-subtitle-text { font-size: clamp(1rem, 2.2vw, 3rem); color: #cbd5e1; margin-bottom: 5vh; font-weight: 600; text-shadow: 0 3px 15px rgba(0,0,0,0.8); }
+        .presenters-box { font-size: clamp(0.9rem, 1.8vw, 2.2rem); color: #f59e0b; font-weight: 800; background: rgba(0, 0, 0, 0.6); padding: 12px 35px; border-radius: 100px; border: 2px solid rgba(245, 158, 11, 0.3); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
 
         /* =========================================
            6. DESIGN DES DIAPOS DE CONTENU
@@ -142,46 +136,44 @@
         .slide-title { font-size: clamp(1.8rem, 3vw, 3.5rem); font-weight: 900; text-transform: uppercase; text-shadow: 0 4px 20px rgba(0,0,0,0.5); }
         .slide-title span { color: #00f2fe; }
 
-        .slide-content { display: grid; grid-template-columns: 1fr 1fr; gap: 3vw; flex-grow: 1; align-items: flex-start; /* Calé en haut */ }
+        .slide-content { display: grid; grid-template-columns: 1fr 1fr; gap: 3vw; flex-grow: 1; align-items: center; }
 
         /* Cartes (Glassmorphism sans tremblements) */
-        .text-column { display: flex; flex-direction: column; gap: 1.5vh; margin-top: 1vh; }
+        .text-column { display: flex; flex-direction: column; gap: 1.5vh; }
 
         .info-card {
             background: rgba(15, 23, 42, 0.3); border: 1px solid rgba(255, 255, 255, 0.03);
             border-left: 6px solid #00f2fe; border-radius: 12px;
-            padding: 2vh 2vw; display: flex; align-items: center;
+            padding: 2.5vh 2vw; display: flex; align-items: center;
             backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            opacity: 0; transform: translate3d(-20px, 0, 0);
+            opacity: 0; transform: translate3d(-30px, 0, 0);
         }
 
         /* Animation cascade fluide */
-        .slide.active .info-card { animation: smoothSlideIn 0.5s forwards ease-out; }
-        .slide.active .info-card:nth-child(1) { animation-delay: 0.2s; }
-        .slide.active .info-card:nth-child(2) { animation-delay: 0.3s; }
-        .slide.active .info-card:nth-child(3) { animation-delay: 0.4s; }
-        .slide.active .info-card:nth-child(4) { animation-delay: 0.5s; }
+        .slide.active .info-card { animation: smoothSlideIn 0.6s forwards cubic-bezier(0.25, 1, 0.5, 1); }
+        .slide.active .info-card:nth-child(1) { animation-delay: 0.1s; }
+        .slide.active .info-card:nth-child(2) { animation-delay: 0.2s; }
+        .slide.active .info-card:nth-child(3) { animation-delay: 0.3s; }
+        .slide.active .info-card:nth-child(4) { animation-delay: 0.4s; }
 
         @keyframes smoothSlideIn { to { opacity: 1; transform: translate3d(0, 0, 0); } }
 
         .info-card.warning { border-left-color: #f59e0b; }
         .info-card:hover { transform: translateX(10px) scale(1.02); background: rgba(30, 41, 59, 0.7); border-color: rgba(0, 242, 254, 0.3); box-shadow: 0 10px 40px rgba(0,242,254,0.15); }
 
-        .info-icon { font-size: 2.2rem; color: #f8fafc; width: 3vw; min-width: 40px; text-align: center; margin-right: 1.5vw; text-shadow: 0 0 15px rgba(255,255,255,0.3); }
+        .info-icon { font-size: 2.5rem; color: #f8fafc; width: 4vw; min-width: 45px; text-align: center; margin-right: 1.5vw; text-shadow: 0 0 15px rgba(255,255,255,0.3); }
         .info-text { font-size: 1.2rem; line-height: 1.4; color: #cbd5e1; }
         .info-text strong { color: #ffffff; font-weight: 800; font-size: 1.6rem; display: block; margin-bottom: 3px; }
 
-        /* Conteneur d'image RÉPARÉ et STABLE */
+        /* Conteneur d'image IA (Simulée, Réparée) */
         .dynamic-image {
-            width: 100%; height: 50vh; /* Taille ajustée pour le gap */
-            border-radius: 16px; overflow: hidden;
+            width: 100%; height: 60vh; border-radius: 16px; overflow: hidden;
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255,255,255,0.05);
             background: #010409; position: relative;
             display: flex; align-items: center; justify-content: center;
-            margin-top: 1vh;
         }
 
-        .dynamic-image img {
+        .dynamic-image img, .intro-bg-container img {
             width: 100%; height: 100%; object-fit: cover; display: block; position: absolute;
             top: 0; left: 0; animation: fadeInImage 1s ease-in;
         }
@@ -193,11 +185,15 @@
         .loader-container i { font-size: 3rem; margin-bottom: 15px; display: block; }
         @keyframes pulse { 50% { opacity: 0.5; } }
 
+        .error-container { text-align: center; color: #ef4444; font-size: 1rem; padding: 1.5vw; animation: shake 0.4s; }
+        .error-container i { font-size: 3rem; margin-bottom: 15px; display: block; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+
         /* =========================================
            7. CONCLUSION SLIDE
            ========================================= */
         .conclusion-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2vw; margin-bottom: 4vh; width: 100%; }
-        .conclusion-card { background: rgba(15, 23, 42, 0.3); border-top: 6px solid #00f2fe; border-radius: 16px; padding: 4vh 2vw; text-align: center; backdrop-filter: blur(25px); opacity: 0; transform: translate3d(0, 20px, 0); }
+        .conclusion-card { background: rgba(15, 23, 42, 0.3); border-top: 6px solid #00f2fe; border-radius: 16px; padding: 4vh 2vw; text-align: center; backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.03); opacity: 0; transform: translate3d(0, 20px, 0); }
         .slide.active .conclusion-card { animation: smoothSlideUp 0.6s forwards ease-out; }
         .slide.active .conclusion-card:nth-child(1) { animation-delay: 0.3s; }
         .slide.active .conclusion-card:nth-child(2) { animation-delay: 0.5s; border-top-color: #f59e0b; }
@@ -210,10 +206,11 @@
         .conclusion-card:nth-child(3) i { background: #3b82f6; box-shadow: 0 10px 20px rgba(59,130,246,0.4); }
         .conclusion-card h3 { font-size: 1.8rem; margin-bottom: 1.5vh; }
         .conclusion-card p { font-size: 1rem; color: #cbd5e1; line-height: 1.5; }
-        .thank-you-text { font-size: 5rem; font-weight: 900; color: #f59e0b; text-align: center; text-shadow: 0 5px 30px rgba(245,158,11,0.6); }
+        .thank-you-text { font-size: clamp(4rem, 7vw, 9rem); font-weight: 900; color: #f59e0b; text-align: center; text-shadow: 0 5px 30px rgba(245,158,11,0.6); animation: pulse-thankyou 2s infinite; }
+        @keyframes pulse-thankyou { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
 
         /* =========================================
-           8. ARTHUR INDUSTRIES BRANDING (CORRIGÉ & DÉPLACÉ À DROITE)
+           8. ARTHUR INDUSTRIES BRANDING (RETABLI, DÉPLACÉ À DROITE)
            ========================================= */
         .brand-footer {
             position: absolute; bottom: 2vh; right: 6vw; /* Déplacé à droite */
@@ -224,17 +221,17 @@
         
         /* Logo IA vectoriel cyan (Ne peut pas se casser) */
         .brand-logo svg {
-            width: 25px; height: 25px;
-            filter: drop-shadow(0 0 5px rgba(0, 242, 254, 0.6));
+            width: 30px; height: 30px;
+            filter: drop-shadow(0 0 8px rgba(0, 242, 254, 0.6));
         }
     </style>
 </head>
 <body>
 
     <div id="cyber-background">
-        <div class="orb" style="width: 60vw; height: 60vw; top: -10vw; left: -10vw; animation-delay: 0s;"></div>
-        <div class="orb" style="width: 70vw; height: 70vw; bottom: -20vw; right: -10vw; animation-delay: -5s; background: rgba(59, 130, 246, 0.1);"></div>
-        <div class="orb" style="width: 40vw; height: 40vw; top: 30vh; left: 40vw; animation-delay: -10s; background: rgba(245, 158, 11, 0.15);"></div>
+        <div class="orb" style="width: 50vw; height: 50vw; top: -10vw; left: -10vw; animation-delay: 0s;"></div>
+        <div class="orb" style="width: 60vw; height: 60vw; bottom: -20vw; right: -10vw; animation-delay: -5s; background: rgba(59, 130, 246, 0.1);"></div>
+        <div class="orb" style="width: 30vw; height: 30vw; top: 30vh; left: 40vw; animation-delay: -10s; background: rgba(245, 158, 11, 0.15);"></div>
     </div>
     
     <div id="progress-bar"></div>
@@ -259,12 +256,12 @@
             <div class="slide-header"><h2 class="slide-title">Local News: <span>Marseille</span></h2></div>
             <div class="slide-content">
                 <div class="text-column">
-                    <div class="info-card"><i class="fa-solid fa-arrow-trend-up info-icon"></i><div class="info-text"><strong>Tourism Boom</strong> Record numbers of visitors this year.</div></div>
-                    <div class="info-card"><i class="fa-solid fa-hotel info-icon"></i><div class="info-text"><strong>Business Growth</strong> Hotels and restaurants are full.</div></div>
-                    <div class="info-card"><i class="fa-solid fa-briefcase info-icon"></i><div class="info-text"><strong>Job Creation</strong> Strong hiring in the service sector.</div></div>
-                    <div class="info-card warning"><i class="fa-solid fa-triangle-exclamation info-icon" style="color:#f59e0b;"></i><div class="info-text"><strong>New Challenges</strong> Managing traffic, noise, and housing.</div></div>
+                    <div class="info-card"><i class="fa-solid fa-arrow-trend-up info-icon"></i><div class="info-text"><strong>Tourism Boom</strong><span>Record numbers of visitors this year.</span></div></div>
+                    <div class="info-card"><i class="fa-solid fa-hotel info-icon"></i><div class="info-text"><strong>Business Growth</strong><span>Hotels and restaurants are full.</span></div></div>
+                    <div class="info-card"><i class="fa-solid fa-briefcase info-icon"></i><div class="info-text"><strong>Job Creation</strong><span>Strong hiring in the service sector.</span></div></div>
+                    <div class="info-card warning"><i class="fa-solid fa-triangle-exclamation info-icon" style="color:#f59e0b;"></i><div class="info-text"><strong>New Challenges</strong><span>Managing traffic, noise, and housing.</span></div></div>
                 </div>
-                <div class="dynamic-image"><img src="https://images.unsplash.com/photo-1566417772186-0744957e8445?auto=format&fit=crop&w=1200&q=80" alt="Vieux-Port Marseille"></div>
+                <div id="ai-img-marseille" class="dynamic-image"></div>
             </div>
             
             <div class="brand-footer">
@@ -289,12 +286,12 @@
                     <div class="info-card"><i class="fa-solid fa-tag info-icon"></i><div class="info-text"><strong>Inflation</strong> Increased prices for the final customers.</div></div>
                     <div class="info-card"><i class="fa-solid fa-building-columns info-icon"></i><div class="info-text"><strong>Government Help</strong> Financial support is slow and complex.</div></div>
                 </div>
-                <div class="dynamic-image"><img src="https://images.unsplash.com/photo-1534620808146-d33bb39128b2?auto=format&fit=crop&w=1200&q=80" alt="Boulangerie Française"></div>
+                <div id="ai-img-france" class="dynamic-image"></div>
             </div>
             <div class="brand-footer">
                 <div class="brand-text">DESIGN BY ARTHUR INDUSTRIES</div>
                 <div class="brand-logo">
-                    <svg viewBox="0 0 100 100"><use href="#arthur-logo-svg-main"/></svg>
+                    <svg viewBox="0 0 100 100"><use href="#arthur-logo-svg"/></svg>
                 </div>
             </div>
         </div>
@@ -308,12 +305,12 @@
                     <div class="info-card"><i class="fa-solid fa-microchip info-icon"></i><div class="info-text"><strong>The A.I. Pivot</strong> Massive investments in Artificial Intelligence.</div></div>
                     <div class="info-card"><i class="fa-solid fa-earth-americas info-icon"></i><div class="info-text"><strong>Workforce Impact</strong> High uncertainty for workers globally.</div></div>
                 </div>
-                <div class="dynamic-image"><img src="https://images.unsplash.com/photo-1581091215367-9b6c00b3035a?auto=format&fit=crop&w=1200&q=80" alt="Tech & AI"></div>
+                <div id="ai-img-tech" class="dynamic-image"></div>
             </div>
             <div class="brand-footer">
                 <div class="brand-text">DESIGN BY ARTHUR INDUSTRIES</div>
                 <div class="brand-logo">
-                    <svg viewBox="0 0 100 100"><use href="#arthur-logo-svg-main"/></svg>
+                    <svg viewBox="0 0 100 100"><use href="#arthur-logo-svg"/></svg>
                 </div>
             </div>
         </div>
@@ -329,7 +326,7 @@
             <div class="brand-footer">
                 <div class="brand-text">DESIGN BY ARTHUR INDUSTRIES</div>
                 <div class="brand-logo">
-                    <svg viewBox="0 0 100 100"><use href="#arthur-logo-svg-main"/></svg>
+                    <svg viewBox="0 0 100 100"><use href="#arthur-logo-svg"/></svg>
                 </div>
             </div>
         </div>
@@ -338,7 +335,7 @@
 
     <svg style="display:none;" xmlns="http://www.w3.org/2000/svg">
         <defs><linearGradient id="grad_footer" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#00f2fe"/><stop offset="100%" stop-color="#4facfe"/></linearGradient></defs>
-        <g id="arthur-logo-svg-main">
+        <g id="arthur-logo-svg">
             <path d="M50 15 L15 85 L35 85 L50 55 L65 85 L85 85 Z" fill="none" stroke="url(#grad_footer)" stroke-width="8" stroke-linejoin="round"/>
             <line x1="38" y1="70" x2="62" y2="70" stroke="url(#grad_footer)" stroke-width="8" stroke-linecap="round"/>
             <circle cx="50" cy="40" r="6" fill="#fbbf24"/>
@@ -346,9 +343,79 @@
     </svg>
 
     <script>
-        // --- 1. SÉCURITÉ ANTI-TREMBLEMENT SAFARI MAC ---
-        // Force les animations à se caler sur le rafraîchissement de l'écran
-        window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame;
+        // --- 1. MOTEUR DE GÉNÉRATION D'IMAGES PAR IA (API GEMINI IMAGEN) ---
+        // J'ai besoin que tu injectes ta clé API si tu veux que ça marche, sinon ça affichera une erreur.
+        const apiKey = "VEUILLEZ_INSERER_VOTRE_CLE_API_GEMINI_ICI"; 
+
+        async function creerImageIA(promptAnglais, containerId) {
+            const container = document.getElementById(containerId);
+            // Animation de chargement d'magie IA
+            container.innerHTML = `
+                <div class="loader-container">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <p>Génération IA...</p>
+                </div>
+            `;
+
+            if (apiKey === "VEUILLEZ_INSERER_VOTRE_CLE_API_GEMINI_ICI" || apiKey === "") {
+                 container.innerHTML = `
+                    <div class="error-container">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <p>Clé API manquante dans le code.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict?key=${apiKey}`;
+            const options = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    instances: { prompt: promptAnglais },
+                    parameters: { sampleCount: 1 }
+                })
+            };
+
+            try {
+                // Relances automatiques si échec (Exponential Backoff)
+                const delays = [1000, 2000, 4000];
+                let response, result;
+                for (let i = 0; i < 4; i++) {
+                    response = await fetch(url, options);
+                    if (response.ok) {
+                        result = await response.json();
+                        break;
+                    }
+                    if (i === 3) throw new Error(`Erreur HTTP : ${response.status}`);
+                    await new Promise(res => setTimeout(res, delays[i]));
+                }
+                
+                if (result.predictions && result.predictions[0]) {
+                    const base64 = result.predictions[0].bytesBase64Encoded;
+                    container.innerHTML = `<img src="data:image/png;base64,${base64}" alt="Image générée par IA">`;
+                } else {
+                    throw new Error("Format de réponse IA invalide");
+                }
+            } catch (error) {
+                console.error(error);
+                container.innerHTML = `
+                    <div class="error-container">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <p>Erreur lors de la génération IA.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // DÉCLENCHER LA CRÉATION DES IMAGES DES LE CHARGEMENT (RÉPARÉ POUR MARSEILLE)
+        window.onload = () => {
+            // Rétablissement des prompts originaux puissants
+            creerImageIA("A photorealistic view of planet Earth from space at night showing city lights, 4k, highly detailed", "ai-img-intro");
+            creerImageIA("A beautiful sunny day at the old port of Marseille France, with boats and blue water, highly detailed photography, 4k", "ai-img-marseille");
+            creerImageIA("A traditional french bakery interior, fresh baguettes and croissants, warm lighting, highly detailed photography, 4k", "ai-img-france");
+            creerImageIA("A glowing abstract digital brain representing artificial intelligence, blue and purple neon lights, futuristic technology concept, 4k", "ai-img-tech");
+        };
 
         // --- 2. LOGIQUE DU DIAPORAMA ---
         let diapoActuelle = 0;
@@ -398,22 +465,21 @@
             else if (e.key === 'f' || e.key === 'F') toggleFullScreen();
         });
 
-        // TRACKPAD - Fix du défilement ultra-rapide d'Apple (Chronomètre intégré)
+        // TRACKPAD - Fix du défilement ultra-rapide (Chronomètre intégré)
         let dernierScroll = 0;
         window.addEventListener('wheel', (e) => {
             const maintenant = new Date().getTime();
             // Bloque le défilement pendant 1,2 secondes après chaque mouvement (Parfait pour Trackpad Mac)
             if (maintenant - dernierScroll < 1200) return; 
 
-            // Détecte si le mouvement est assez fort
             if (Math.abs(e.deltaY) > 25 || Math.abs(e.deltaX) > 25) {
-                if (e.deltaY > 0 || e.deltaX > 0) changerDiapo(diapoActuelle + 1); // Suivant
-                else changerDiapo(diapoActuelle - 1); // Précédent
+                if (e.deltaY > 0 || e.deltaX > 0) changerDiapo(diapoActuelle + 1);
+                else changerDiapo(diapoActuelle - 1);
                 dernierScroll = maintenant;
             }
         }, { passive: true }); // passive pour Safari Mac
 
-        // Initialiser au chargement
+        // Initialiser la barre au chargement
         window.addEventListener('load', mettreAJourProgression);
     </script>
 </body>
