@@ -2,220 +2,243 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Global Business News - Design by ArthurIndustries</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Business News - Arthur Industries</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
-        /* --- CONFIGURATION GLOBALE --- */
+        /* =========================================
+           1. CONFIGURATION GLOBALE & RESET
+           ========================================= */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         html, body {
-            height: 100%; overflow: hidden; background-color: #040811;
+            width: 100%; height: 100vh; overflow: hidden;
+            background-color: #020617; /* Noir bleuté très profond */
+            font-family: 'Outfit', sans-serif;
+            color: #f8fafc; user-select: none;
         }
 
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif; color: #f8fafc;
-            user-select: none; width: 100vw;
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        /* --- FOND ANIMÉ --- */
-        #animated-bg {
+        /* =========================================
+           2. FOND ANIMÉ DYNAMIQUE
+           ========================================= */
+        #cyber-background {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            overflow: hidden; z-index: 0;
-        }
-        
-        .particle {
-            position: absolute; border-radius: 50%;
-            background: linear-gradient(135deg, rgba(6, 182, 212, 0.4), rgba(59, 130, 246, 0.2));
-            filter: blur(15px); opacity: 0.5;
-            animation: floatParticle 30s infinite alternate ease-in-out;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(6, 182, 212, 0.08), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.08), transparent 25%);
+            z-index: 0; pointer-events: none;
         }
 
-        @keyframes floatParticle {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(100px, 100px) scale(1.2); }
-        }
-
-        /* --- BARRE DE PROGRESSION & BOUTON --- */
+        /* =========================================
+           3. UI (BARRE DE PROGRESSION & BOUTONS)
+           ========================================= */
         #progress-bar {
-            position: fixed; top: 0; left: 0; height: 5px;
-            background: linear-gradient(90deg, #06b6d4, #3b82f6);
-            width: 0%; transition: width 0.4s ease-out; z-index: 100;
+            position: fixed; top: 0; left: 0; height: 4px;
+            background: linear-gradient(90deg, #00f2fe 0%, #4facfe 100%);
+            width: 0%; transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 100; box-shadow: 0 0 15px rgba(0, 242, 254, 0.8);
         }
-        
+
         .fullscreen-btn {
-            position: absolute; top: 15px; right: 15px;
-            background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white; padding: 8px 15px; border-radius: 8px; cursor: pointer;
-            z-index: 100; font-family: inherit; font-size: 0.8rem;
-            backdrop-filter: blur(10px); transition: 0.3s;
+            position: absolute; top: 20px; right: 20px;
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.8); padding: 8px 16px; border-radius: 8px;
+            cursor: pointer; z-index: 100; font-family: inherit; font-size: 0.85rem;
+            backdrop-filter: blur(10px); transition: all 0.3s ease;
         }
-        .fullscreen-btn:hover { background: rgba(6, 182, 212, 0.5); }
+        .fullscreen-btn:hover {
+            background: rgba(0, 242, 254, 0.2); color: #fff;
+            border-color: #00f2fe; box-shadow: 0 0 15px rgba(0,242,254,0.4);
+        }
 
-        .presentation-screen { width: 100vw; height: 100vh; position: relative; z-index: 1; }
+        /* =========================================
+           4. MOTEUR DES DIAPOSITIVES
+           ========================================= */
+        .presentation-screen { width: 100%; height: 100%; position: relative; z-index: 1; }
 
-        /* --- DIAPOSITIVES (ANIMATION SAFARI-SAFE) --- */
         .slide {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             padding: 5vh 6vw; display: flex; flex-direction: column;
             opacity: 0; visibility: hidden;
-            transition: opacity 0.5s ease, transform 0.5s ease;
-            transform: translateY(20px);
-            will-change: opacity, transform;
+            transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+            transform: translate3d(0, 40px, 0) scale(0.98);
         }
 
         .slide.active {
-            opacity: 1; visibility: visible; transform: translateY(0); z-index: 10;
+            opacity: 1; visibility: visible;
+            transform: translate3d(0, 0, 0) scale(1); z-index: 10;
         }
 
-        /* --- EN-TÊTE --- */
-        .slide-header { margin-bottom: 3vh; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 1vh; }
-        .slide-title { font-size: clamp(2rem, 3.5vw, 4rem); font-weight: 900; text-transform: uppercase; }
-        .slide-title span { color: #06b6d4; }
+        /* =========================================
+           5. LA TERRE EN 3D (SLIDE INTRO)
+           ========================================= */
+        .slide-intro { justify-content: center; align-items: center; text-align: center; }
+        
+        .earth-container {
+            width: 300px; height: 300px; margin: 0 auto 3vh auto;
+            border-radius: 50%; position: relative;
+            /* La texture de la terre (Image Wikipedia Commons fiable) */
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/c/c4/Earthmap1000x500compac.jpg');
+            background-size: 200% 100%;
+            /* L'animation qui fait tourner l'image de fond */
+            animation: spinEarth 15s linear infinite;
+            /* L'ombre interne qui donne l'effet de sphère 3D */
+            box-shadow: 
+                inset -40px -40px 60px rgba(0, 0, 0, 0.9), 
+                inset 10px 10px 30px rgba(255, 255, 255, 0.3),
+                0 0 50px rgba(0, 242, 254, 0.4);
+        }
 
-        .slide-content { display: grid; grid-template-columns: 1fr 1fr; gap: 4vw; flex-grow: 1; align-items: center; }
+        @keyframes spinEarth {
+            0% { background-position: 0 0; }
+            100% { background-position: -200% 0; }
+        }
 
-        /* --- CARTES DE TEXTE (ANIMATION FLUIDE) --- */
-        .text-column { display: flex; flex-direction: column; gap: 2.5vh; }
+        .intro-badge {
+            background: linear-gradient(90deg, #00f2fe, #4facfe); color: #020617;
+            padding: 8px 24px; border-radius: 50px; font-weight: 900;
+            letter-spacing: 3px; text-transform: uppercase; margin-bottom: 2vh;
+            font-size: 0.9rem; display: inline-block; box-shadow: 0 5px 20px rgba(0,242,254,0.3);
+        }
+        .intro-title-text { font-size: clamp(3rem, 6vw, 7rem); font-weight: 900; margin-bottom: 1.5vh; }
+        .intro-title-text span { background: linear-gradient(90deg, #00f2fe, #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .intro-subtitle-text { font-size: 1.5rem; color: #94a3b8; margin-bottom: 4vh; letter-spacing: 1px; }
+        .presenters-box { font-size: 1.2rem; color: #fbbf24; background: rgba(0,0,0,0.5); padding: 12px 35px; border-radius: 100px; border: 1px solid rgba(251,191,36,0.3); display: inline-flex; align-items: center; gap: 10px; }
 
+        /* =========================================
+           6. DESIGN DES SLIDES DE CONTENU
+           ========================================= */
+        .slide-header { margin-bottom: 3vh; }
+        .slide-title { font-size: 3rem; font-weight: 900; text-transform: uppercase; border-bottom: 2px solid rgba(255,255,255,0.05); padding-bottom: 15px; }
+        .slide-title span { color: #00f2fe; }
+
+        .slide-content { display: grid; grid-template-columns: 1fr 1fr; gap: 4vw; align-items: center; }
+
+        /* Les cartes (Glassmorphism parfait sans tremblements) */
+        .text-column { display: flex; flex-direction: column; gap: 2vh; }
+        
         .info-card {
-            background: rgba(30, 41, 59, 0.6); border-left: 6px solid #06b6d4; border-radius: 12px;
-            padding: 2.5vh 2vw; display: flex; align-items: center;
-            opacity: 0; transform: translateX(-20px); transition: 0.4s;
-            will-change: opacity, transform;
+            background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.05);
+            border-left: 6px solid #00f2fe; border-radius: 16px;
+            padding: 2.5vh 2vw; display: flex; align-items: center; gap: 20px;
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            opacity: 0; transform: translate3d(-30px, 0, 0);
         }
 
-        .slide.active .info-card { animation: slideIn 0.5s forwards ease-out; }
+        /* Animation d'apparition en cascade (Fluide sur Chrome) */
+        .slide.active .info-card { animation: smoothSlideIn 0.6s forwards cubic-bezier(0.2, 0.8, 0.2, 1); }
         .slide.active .info-card:nth-child(1) { animation-delay: 0.1s; }
         .slide.active .info-card:nth-child(2) { animation-delay: 0.2s; }
         .slide.active .info-card:nth-child(3) { animation-delay: 0.3s; }
         .slide.active .info-card:nth-child(4) { animation-delay: 0.4s; }
 
-        @keyframes slideIn { to { opacity: 1; transform: translateX(0); } }
+        @keyframes smoothSlideIn { to { opacity: 1; transform: translate3d(0, 0, 0); } }
 
-        .info-card.warning { border-left-color: #f59e0b; }
-        .info-icon { font-size: 2.5vw; color: #f8fafc; width: 4vw; text-align: center; margin-right: 1.5vw; }
-        .info-text { font-size: 1.5vw; line-height: 1.4; color: #cbd5e1; }
-        .info-text strong { color: #ffffff; font-weight: 800; font-size: 1.8vw; display: block; }
+        .info-card.warning { border-left-color: #fbbf24; }
+        .info-card:hover { transform: scale(1.02); background: rgba(30, 41, 59, 0.8); border-color: rgba(0, 242, 254, 0.4); box-shadow: 0 10px 30px rgba(0,242,254,0.1); }
 
-        /* --- IMAGES (SÉCURISÉES) --- */
+        .info-icon { font-size: 2.5rem; color: #f8fafc; width: 60px; text-align: center; }
+        .info-text { display: flex; flex-direction: column; }
+        .info-text strong { color: #fff; font-size: 1.5rem; font-weight: 800; margin-bottom: 5px; }
+        .info-text span { color: #cbd5e1; font-size: 1.1rem; line-height: 1.4; }
+
+        /* Conteneur des images (Bords arrondis et ombres) */
         .dynamic-image {
-            width: 100%; height: 55vh; border-radius: 16px; overflow: hidden;
-            background: #1e293b; position: relative; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            width: 100%; height: 60vh; border-radius: 20px; overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            position: relative; background: #0f172a;
         }
-
-        .dynamic-image img, .intro-bg-container img {
-            width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;
-            animation: fadeImg 1s ease-in;
+        .dynamic-image img {
+            width: 100%; height: 100%; object-fit: cover;
+            opacity: 0; animation: fadeIn 1s forwards ease-in;
         }
+        @keyframes fadeIn { to { opacity: 1; } }
 
-        @keyframes fadeImg { from { opacity: 0; } to { opacity: 1; } }
-
-        .loader-container { color: #06b6d4; font-size: 1.5vw; font-weight: 600; text-align: center; animation: pulse 1s infinite; }
-        .loader-container i { font-size: 4vw; margin-bottom: 15px; display: block; }
-        @keyframes pulse { 50% { opacity: 0.5; } }
-
-        /* --- FOOTER ARTHUR INDUSTRIES (PUR CSS - INDESTRUCTIBLE) --- */
-        .presentation-footer {
-            position: absolute; bottom: 2vh; right: 4vw;
-            display: flex; align-items: center; gap: 10px; z-index: 50;
+        /* =========================================
+           7. CONCLUSION SLIDE
+           ========================================= */
+        .conclusion-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2vw; margin-bottom: 5vh; }
+        .conclusion-card { 
+            background: rgba(15, 23, 42, 0.5); border-top: 6px solid #00f2fe; border-radius: 16px; 
+            padding: 4vh 2vw; text-align: center; backdrop-filter: blur(10px);
+            opacity: 0; transform: translate3d(0, 30px, 0);
         }
-        
-        .footer-text { font-size: 1vw; font-weight: 600; color: rgba(255, 255, 255, 0.4); }
-        
-        /* Logo dessiné en code, il ne peut pas se casser ! */
-        .css-logo {
-            width: 25px; height: 25px; border-radius: 6px;
-            background: linear-gradient(135deg, #06b6d4, #3b82f6);
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-weight: 900; font-size: 14px; font-family: sans-serif;
-            box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
-        }
-
-        /* --- DIAPO INTRO --- */
-        .slide-intro { justify-content: center; align-items: center; text-align: center; }
-        .intro-bg-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.4; z-index: 0; }
-        .intro-content { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; }
-        
-        .intro-badge { background: #06b6d4; color: #fff; padding: 10px 30px; border-radius: 50px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 3vh; }
-        .intro-title-text { font-size: 8vw; font-weight: 900; line-height: 1; margin-bottom: 2vh; }
-        .intro-title-text span { color: #06b6d4; }
-        
-        /* Grand Logo CSS Intro */
-        .main-css-logo {
-            width: 80px; height: 80px; border-radius: 20px;
-            background: linear-gradient(135deg, #06b6d4, #3b82f6);
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-weight: 900; font-size: 45px; font-family: sans-serif;
-            margin-bottom: 3vh; box-shadow: 0 0 30px rgba(6, 182, 212, 0.5);
-            animation: floatLogo 3s infinite alternate ease-in-out;
-        }
-        @keyframes floatLogo { to { transform: translateY(-10px); } }
-
-        .intro-subtitle-text { font-size: 2.5vw; color: #cbd5e1; margin-bottom: 4vh; }
-        .presenters-box { font-size: 1.8vw; color: #f59e0b; background: rgba(0,0,0,0.6); padding: 15px 40px; border-radius: 100px; border: 2px solid rgba(245,158,11,0.5); }
-
-        /* --- DIAPO CONCLUSION --- */
-        .conclusion-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3vw; margin-bottom: 5vh; width: 100%; }
-        .conclusion-card { background: rgba(30, 41, 59, 0.5); border-top: 6px solid #06b6d4; border-radius: 16px; padding: 4vh 2vw; text-align: center; opacity: 0; transform: translateY(20px); }
-        .slide.active .conclusion-card { animation: slideUp 0.6s forwards ease-out; }
+        .slide.active .conclusion-card { animation: smoothSlideUp 0.6s forwards cubic-bezier(0.2, 0.8, 0.2, 1); }
         .slide.active .conclusion-card:nth-child(1) { animation-delay: 0.2s; }
-        .slide.active .conclusion-card:nth-child(2) { animation-delay: 0.4s; border-top-color: #f59e0b; }
-        .slide.active .conclusion-card:nth-child(3) { animation-delay: 0.6s; border-top-color: #3b82f6; }
-        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
-
-        .conclusion-card i { font-size: 3vw; color: #fff; background: #06b6d4; width: 6vw; height: 6vw; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; margin-bottom: 2vh; }
-        .conclusion-card:nth-child(2) i { background: #f59e0b; }
-        .conclusion-card:nth-child(3) i { background: #3b82f6; }
-        .conclusion-card h3 { font-size: 2vw; color: #fff; margin-bottom: 1vh; }
-        .conclusion-card p { font-size: 1.2vw; color: #cbd5e1; }
+        .slide.active .conclusion-card:nth-child(2) { animation-delay: 0.4s; border-top-color: #fbbf24; }
+        .slide.active .conclusion-card:nth-child(3) { animation-delay: 0.6s; border-top-color: #4facfe; }
         
-        .thank-you-text { font-size: 6vw; font-weight: 900; color: #f59e0b; text-align: center; animation: pulse 2s infinite; }
+        @keyframes smoothSlideUp { to { opacity: 1; transform: translate3d(0, 0, 0); } }
+
+        .conclusion-card i { font-size: 2.5rem; color: #fff; background: #00f2fe; width: 80px; height: 80px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; margin-bottom: 2vh; box-shadow: 0 10px 20px rgba(0,242,254,0.3); }
+        .conclusion-card:nth-child(2) i { background: #fbbf24; box-shadow: 0 10px 20px rgba(251,191,36,0.3); }
+        .conclusion-card:nth-child(3) i { background: #4facfe; box-shadow: 0 10px 20px rgba(79,172,254,0.3); }
+        
+        .conclusion-card h3 { font-size: 1.8rem; margin-bottom: 15px; }
+        .conclusion-card p { font-size: 1.1rem; color: #94a3b8; line-height: 1.5; }
+        .thank-you-text { font-size: 5rem; font-weight: 900; color: #fbbf24; text-align: center; text-shadow: 0 10px 30px rgba(251,191,36,0.3); }
+
+        /* =========================================
+           8. ARTHUR INDUSTRIES (LE VRAI LOGO)
+           ========================================= */
+        .brand-footer {
+            position: absolute; bottom: 25px; right: 35px;
+            display: flex; align-items: center; gap: 12px; z-index: 50;
+        }
+        .brand-text { font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.4); letter-spacing: 1px; }
+        
+        /* Logo SVG dessiné en code (Un 'A' high-tech parfait) */
+        .brand-logo svg {
+            width: 35px; height: 35px;
+            filter: drop-shadow(0 0 8px rgba(0, 242, 254, 0.6));
+        }
     </style>
 </head>
 <body>
 
-    <div id="animated-bg"></div>
+    <div id="cyber-background"></div>
     <div id="progress-bar"></div>
     
-    <button class="fullscreen-btn" onclick="toggleFullScreen()"><i class="fa-solid fa-expand"></i> Plein Écran</button>
+    <button class="fullscreen-btn" onclick="toggleFullScreen()"><i class="fa-solid fa-expand"></i> Plein Écran (F)</button>
 
     <div class="presentation-screen" id="screen">
 
         <div class="slide slide-intro active" id="slide-0">
-            <div id="ai-img-intro" class="intro-bg-container"></div>
-            <div class="intro-content">
-                <div class="intro-badge">Special Edition</div>
-                <h1 class="intro-title-text">Global <span>Business</span> News</h1>
-                
-                <div class="main-css-logo">A</div>
-
-                <p class="intro-subtitle-text">Local, National, and International Insights</p>
-                <div class="presenters-box"><i class="fa-solid fa-microphone-lines"></i> Presented by: Ilyana, Elsa & Anna</div>
-            </div>
+            
+            <div class="earth-container"></div>
+            
+            <div class="intro-badge">Special Edition</div>
+            <h1 class="intro-title-text">Global <span>Business</span> News</h1>
+            <p class="intro-subtitle-text">Local, National, and International Insights</p>
+            <div class="presenters-box"><i class="fa-solid fa-microphone-lines"></i> Presented by: Ilyana, Elsa & Anna</div>
         </div>
 
         <div class="slide" id="slide-1">
             <div class="slide-header"><h2 class="slide-title">Local News: <span>Marseille</span></h2></div>
             <div class="slide-content">
                 <div class="text-column">
-                    <div class="info-card"><i class="fa-solid fa-arrow-trend-up info-icon"></i><div class="info-text"><strong>Tourism Boom</strong> Record numbers of visitors this year.</div></div>
-                    <div class="info-card"><i class="fa-solid fa-hotel info-icon"></i><div class="info-text"><strong>Business Growth</strong> Hotels and restaurants are full.</div></div>
-                    <div class="info-card"><i class="fa-solid fa-briefcase info-icon"></i><div class="info-text"><strong>Job Creation</strong> Strong hiring in the service sector.</div></div>
-                    <div class="info-card warning"><i class="fa-solid fa-triangle-exclamation info-icon" style="color:#f59e0b;"></i><div class="info-text"><strong>New Challenges</strong> Managing traffic, noise, and housing.</div></div>
+                    <div class="info-card"><i class="fa-solid fa-arrow-trend-up info-icon"></i><div class="info-text"><strong>Tourism Boom</strong><span>Record numbers of visitors this year.</span></div></div>
+                    <div class="info-card"><i class="fa-solid fa-hotel info-icon"></i><div class="info-text"><strong>Business Growth</strong><span>Hotels and restaurants are full.</span></div></div>
+                    <div class="info-card"><i class="fa-solid fa-briefcase info-icon"></i><div class="info-text"><strong>Job Creation</strong><span>Strong hiring in the service sector.</span></div></div>
+                    <div class="info-card warning"><i class="fa-solid fa-triangle-exclamation info-icon" style="color:#fbbf24;"></i><div class="info-text"><strong>New Challenges</strong><span>Managing traffic, noise, and housing.</span></div></div>
                 </div>
-                <div id="ai-img-marseille" class="dynamic-image"></div>
+                <div class="dynamic-image"><img src="https://images.unsplash.com/photo-1571954313217-1db2aeb28cd7?auto=format&fit=crop&w=1200&q=80" alt="Marseille"></div>
             </div>
             
-            <div class="presentation-footer">
-                <div class="css-logo">A</div>
-                <div class="footer-text">Design by ArthurIndustries</div>
+            <div class="brand-footer">
+                <div class="brand-text">DESIGN BY ARTHUR INDUSTRIES</div>
+                <div class="brand-logo">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <defs><linearGradient id="grad" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#00f2fe"/><stop offset="100%" stop-color="#4facfe"/></linearGradient></defs>
+                        <path d="M50 15 L15 85 L35 85 L50 55 L65 85 L85 85 Z" fill="none" stroke="url(#grad)" stroke-width="8" stroke-linejoin="round"/>
+                        <line x1="38" y1="70" x2="62" y2="70" stroke="url(#grad)" stroke-width="8" stroke-linecap="round"/>
+                        <circle cx="50" cy="40" r="6" fill="#fbbf24"/>
+                    </svg>
+                </div>
             </div>
         </div>
 
@@ -223,16 +246,19 @@
             <div class="slide-header"><h2 class="slide-title">National News: <span>France</span></h2></div>
             <div class="slide-content">
                 <div class="text-column">
-                    <div class="info-card warning"><i class="fa-solid fa-bolt info-icon" style="color:#f59e0b;"></i><div class="info-text"><strong>Energy Crisis</strong> Soaring costs for electricity and gas.</div></div>
-                    <div class="info-card"><i class="fa-solid fa-shop info-icon"></i><div class="info-text"><strong>Small Businesses</strong> Bakeries struggle to pay high bills.</div></div>
-                    <div class="info-card"><i class="fa-solid fa-tag info-icon"></i><div class="info-text"><strong>Inflation</strong> Increased prices for the final customers.</div></div>
-                    <div class="info-card"><i class="fa-solid fa-building-columns info-icon"></i><div class="info-text"><strong>Government Help</strong> Financial support is slow and complex.</div></div>
+                    <div class="info-card warning"><i class="fa-solid fa-bolt info-icon" style="color:#fbbf24;"></i><div class="info-text"><strong>Energy Crisis</strong><span>Soaring costs for electricity and gas.</span></div></div>
+                    <div class="info-card"><i class="fa-solid fa-shop info-icon"></i><div class="info-text"><strong>Small Businesses</strong><span>Bakeries struggle to pay high bills.</span></div></div>
+                    <div class="info-card"><i class="fa-solid fa-tag info-icon"></i><div class="info-text"><strong>Inflation</strong><span>Increased prices for the final customers.</span></div></div>
+                    <div class="info-card"><i class="fa-solid fa-building-columns info-icon"></i><div class="info-text"><strong>Government Help</strong><span>Financial support is slow and complex.</span></div></div>
                 </div>
-                <div id="ai-img-france" class="dynamic-image"></div>
+                <div class="dynamic-image"><img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1200&q=80" alt="France Bakery"></div>
             </div>
-            <div class="presentation-footer">
-                <div class="css-logo">A</div>
-                <div class="footer-text">Design by ArthurIndustries</div>
+            
+            <div class="brand-footer">
+                <div class="brand-text">DESIGN BY ARTHUR INDUSTRIES</div>
+                <div class="brand-logo">
+                    <svg viewBox="0 0 100 100"><use href="#arthur-logo-svg"/></svg>
+                </div>
             </div>
         </div>
 
@@ -240,16 +266,19 @@
             <div class="slide-header"><h2 class="slide-title">Global News: <span>Tech Industry</span></h2></div>
             <div class="slide-content">
                 <div class="text-column">
-                    <div class="info-card warning"><i class="fa-solid fa-users-slash info-icon" style="color:#f59e0b;"></i><div class="info-text"><strong>Mass Layoffs</strong> Giant tech companies reduce their staff.</div></div>
-                    <div class="info-card"><i class="fa-solid fa-chart-line-down info-icon"></i><div class="info-text"><strong>New Strategy</strong> Strict focus on cost reduction & profits.</div></div>
-                    <div class="info-card"><i class="fa-solid fa-microchip info-icon"></i><div class="info-text"><strong>The A.I. Pivot</strong> Massive investments in Artificial Intelligence.</div></div>
-                    <div class="info-card"><i class="fa-solid fa-earth-americas info-icon"></i><div class="info-text"><strong>Workforce Impact</strong> High uncertainty for workers globally.</div></div>
+                    <div class="info-card warning"><i class="fa-solid fa-users-slash info-icon" style="color:#fbbf24;"></i><div class="info-text"><strong>Mass Layoffs</strong><span>Giant tech companies reduce their staff.</span></div></div>
+                    <div class="info-card"><i class="fa-solid fa-chart-line info-icon"></i><div class="info-text"><strong>New Strategy</strong><span>Strict focus on cost reduction & profits.</span></div></div>
+                    <div class="info-card"><i class="fa-solid fa-microchip info-icon"></i><div class="info-text"><strong>The A.I. Pivot</strong><span>Massive investments in Artificial Intelligence.</span></div></div>
+                    <div class="info-card"><i class="fa-solid fa-earth-americas info-icon"></i><div class="info-text"><strong>Workforce Impact</strong><span>High uncertainty for workers globally.</span></div></div>
                 </div>
-                <div id="ai-img-tech" class="dynamic-image"></div>
+                <div class="dynamic-image"><img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=1200&q=80" alt="Tech AI"></div>
             </div>
-            <div class="presentation-footer">
-                <div class="css-logo">A</div>
-                <div class="footer-text">Design by ArthurIndustries</div>
+            
+            <div class="brand-footer">
+                <div class="brand-text">DESIGN BY ARTHUR INDUSTRIES</div>
+                <div class="brand-logo">
+                    <svg viewBox="0 0 100 100"><use href="#arthur-logo-svg"/></svg>
+                </div>
             </div>
         </div>
 
@@ -261,62 +290,30 @@
                 <div class="conclusion-card"><i class="fa-solid fa-network-wired"></i><h3>Global Level</h3><p>The tech industry must constantly adapt to survive new market trends.</p></div>
             </div>
             <h2 class="thank-you-text">THANK YOU!</h2>
-            <div class="presentation-footer">
-                <div class="css-logo">A</div>
-                <div class="footer-text">Design by ArthurIndustries</div>
+            
+            <div class="brand-footer">
+                <div class="brand-text">DESIGN BY ARTHUR INDUSTRIES</div>
+                <div class="brand-logo">
+                    <svg viewBox="0 0 100 100"><use href="#arthur-logo-svg"/></svg>
+                </div>
             </div>
         </div>
 
     </div>
 
+    <svg style="display:none;" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="grad" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#00f2fe"/><stop offset="100%" stop-color="#4facfe"/></linearGradient></defs>
+        <g id="arthur-logo-svg">
+            <path d="M50 15 L15 85 L35 85 L50 55 L65 85 L85 85 Z" fill="none" stroke="url(#grad)" stroke-width="8" stroke-linejoin="round"/>
+            <line x1="38" y1="70" x2="62" y2="70" stroke="url(#grad)" stroke-width="8" stroke-linecap="round"/>
+            <circle cx="50" cy="40" r="6" fill="#fbbf24"/>
+        </g>
+    </svg>
+
     <script>
-        // --- 1. IMAGES 100% SÉCURISÉES ---
-        // J'utilise le serveur Picsum qui est universel et ne bloque pas Safari
-        const photosMagiques = {
-            "ai-img-intro": "https://picsum.photos/id/320/1920/1080", // Ville
-            "ai-img-marseille": "https://picsum.photos/id/122/1080/720", // Ville / Rues
-            "ai-img-france": "https://picsum.photos/id/42/1080/720", // Café / Boulangerie
-            "ai-img-tech": "https://picsum.photos/id/0/1080/720" // Ordinateur / Tech
-        };
-
-        function chargerImage(containerId) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            container.innerHTML = `
-                <div class="loader-container">
-                    <i class="fa-solid fa-spinner fa-spin"></i>
-                    <p>Chargement...</p>
-                </div>
-            `;
-            setTimeout(() => {
-                container.innerHTML = `<img src="${photosMagiques[containerId]}" alt="Image">`;
-            }, 1000);
-        }
-
-        window.addEventListener('load', () => {
-            creerParticules();
-            chargerImage("ai-img-intro");
-            chargerImage("ai-img-marseille");
-            chargerImage("ai-img-france");
-            chargerImage("ai-img-tech");
-            mettreAJourProgression();
-        });
-
-        function creerParticules() {
-            const container = document.getElementById('animated-bg');
-            for (let i = 0; i < 15; i++) {
-                const particule = document.createElement('div');
-                particule.className = 'particle';
-                particule.style.top = Math.random() * 100 + 'vh';
-                particule.style.left = Math.random() * 100 + 'vw';
-                particule.style.width = Math.random() * 100 + 50 + 'px';
-                particule.style.height = particule.style.width;
-                particule.style.animationDelay = Math.random() * -20 + 's';
-                container.appendChild(particule);
-            }
-        }
-
-        // --- 2. NAVIGATION ---
+        // =========================================
+        // MOTEUR DE NAVIGATION (CHROME OPTIMISÉ)
+        // =========================================
         let diapoActuelle = 0;
         const totalDiapos = 5;
         const slides = document.querySelectorAll('.slide');
@@ -333,22 +330,24 @@
             mettreAJourProgression();
         }
 
-        // --- 3. PLEIN ÉCRAN ---
+        // --- PLEIN ÉCRAN (PARFAIT POUR CHROME) ---
         function toggleFullScreen() {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen().catch(e => console.log(e));
             } else {
-                document.exitFullscreen();
+                if(document.exitFullscreen) document.exitFullscreen();
             }
         }
 
-        // --- 4. CONTRÔLES SÉCURISÉS ---
+        // --- CONTRÔLES SOURIS / CLAVIER ---
         document.addEventListener('click', (e) => {
             if (e.target.closest('.fullscreen-btn')) return;
             changerDiapo(diapoActuelle + 1);
         });
         
-        document.addEventListener('contextmenu', (e) => { e.preventDefault(); changerDiapo(diapoActuelle - 1); });
+        document.addEventListener('contextmenu', (e) => { 
+            e.preventDefault(); changerDiapo(diapoActuelle - 1); 
+        });
 
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') changerDiapo(diapoActuelle + 1);
@@ -356,11 +355,12 @@
             else if (e.key === 'f' || e.key === 'F') toggleFullScreen();
         });
 
-        // TRACKPAD - Fix du défilement ultra-rapide (Chrono de 1.2s)
+        // --- TRACKPAD (SÉCURITÉ ANTI-DÉRAPAGE) ---
         let dernierScroll = 0;
         window.addEventListener('wheel', (e) => {
             const maintenant = new Date().getTime();
-            if (maintenant - dernierScroll < 1200) return; // Bloque pendant 1.2 seconde
+            // Bloque le défilement pendant 1,2 secondes après chaque mouvement (Parfait pour Trackpad Mac)
+            if (maintenant - dernierScroll < 1200) return; 
 
             if (Math.abs(e.deltaY) > 20 || Math.abs(e.deltaX) > 20) {
                 if (e.deltaY > 0 || e.deltaX > 0) changerDiapo(diapoActuelle + 1);
@@ -368,7 +368,6 @@
                 dernierScroll = maintenant;
             }
         });
-
     </script>
 </body>
 </html>
