@@ -6,46 +6,48 @@
     <title>Global Business News - Design by ArthurIndustries</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
-        /* --- CONFIGURATION GLOBALE --- */
+        /* =========================================
+           1. CONFIGURATION GLOBALE
+           ========================================= */
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
         
-        /* Force le plein écran absolu sans void blanc sur Safari Mac */
         html, body {
-            height: 100%; width: 100%;
-            overflow: hidden;
-            background-color: #010409; /* Fond noir profond */
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            height: 100vh; width: 100vw; overflow: hidden;
+            background-color: #010409;
+            font-family: 'Outfit', sans-serif;
             color: #f8fafc; user-select: none;
-            position: fixed; /* Fix pour Safari Mac */
         }
 
         body { display: flex; align-items: center; justify-content: center; position: relative; }
 
-        /* --- FOND ANIMÉ (BILLES/ORBES) - NOUVEAU THEME DANS LE MEME STYLE --- */
+        /* =========================================
+           2. LES FAMEUSES BULLES (ORBES) - BIEN VISIBLES !
+           ========================================= */
         #cyber-background {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            overflow: hidden; z-index: 0; background: #010409; pointer-events: none;
+            overflow: hidden; z-index: 0; pointer-events: none;
         }
         .orb {
             position: absolute; border-radius: 50%;
-            background: linear-gradient(135deg, rgba(6, 182, 212, 0.4), rgba(59, 130, 246, 0.1));
-            filter: blur(15px); opacity: 0.5;
-            animation: floatOrb 25s infinite linear alternate ease-in-out;
+            filter: blur(25px); opacity: 0.85; /* Opacité très forte pour bien les voir */
+            animation: floatOrb 20s infinite alternate ease-in-out;
         }
         @keyframes floatOrb {
             0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(150px, 100px) scale(1.3); }
+            100% { transform: translate(120px, 90px) scale(1.3); }
         }
 
-        /* --- UI ELEMENTS (PROGRÈS, BOUTONS) --- */
+        /* =========================================
+           3. BARRE DE PROGRESSION & BOUTON
+           ========================================= */
         #progress-bar {
             position: fixed; top: 0; left: 0; height: 5px;
             background: linear-gradient(90deg, #00f2fe, #4facfe);
-            width: 0%; transition: width 0.4s ease-out;
+            width: 0%; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 100; box-shadow: 0 0 15px rgba(0, 242, 254, 0.8);
         }
 
@@ -54,107 +56,50 @@
             background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
             color: rgba(255, 255, 255, 0.6); padding: 8px 12px; border-radius: 8px;
             cursor: pointer; z-index: 100; font-family: inherit; font-size: 0.8rem;
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            transition: all 0.3s; display: flex; align-items: center; gap: 8px;
+            backdrop-filter: blur(10px); transition: all 0.3s;
         }
         .fullscreen-btn:hover { background: rgba(0, 242, 254, 0.2); color: white; border-color: #00f2fe; }
 
-        .presentation-screen { width: 100vw; height: 100vh; position: relative; z-index: 1; }
+        /* =========================================
+           4. MOTEUR DES DIAPOSITIVES
+           ========================================= */
+        .presentation-screen { width: 100vw; height: 100vh; position: relative; z-index: 10; }
 
-        /* --- DIAPOSITIVES --- */
         .slide {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             padding: 5vh 6vw; display: flex; flex-direction: column;
             opacity: 0; visibility: hidden;
-            /* Transition fluide 3D digne d'une Keynote */
-            transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: opacity 0.7s ease, transform 0.7s ease;
             transform: translate3d(0, 30px, 0);
         }
 
-        .slide.active { opacity: 1; visibility: visible; transform: translate3d(0, 0, 0); z-index: 10; }
-
-        /* --- EN-TÊTE --- */
-        .slide-header { margin-bottom: 3vh; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 1vh; }
-        .slide-title { font-size: clamp(1.8rem, 3vw, 3.5rem); font-weight: 900; text-transform: uppercase; text-shadow: 0 4px 20px rgba(0,0,0,0.5); }
-        .slide-title span { color: #00f2fe; }
-
-        .slide-content { display: grid; grid-template-columns: 1fr 1fr; gap: 4vw; flex-grow: 1; align-items: center; }
-
-        /* Cartes (Glassmorphism sans tremblements) */
-        .text-column { display: flex; flex-direction: column; gap: 2.5vh; }
-
-        .info-card {
-            background: rgba(15, 23, 42, 0.3); border: 1px solid rgba(255, 255, 255, 0.03);
-            border-left: 6px solid #00f2fe; border-radius: 12px;
-            padding: 2vh 2vw; display: flex; align-items: center;
-            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            opacity: 0; transform: translate3d(-20px, 0, 0);
-        }
-
-        /* Animation cascade fluide */
-        .slide.active .info-card { animation: smoothSlideIn 0.5s forwards ease-out; }
-        .slide.active .info-card:nth-child(1) { animation-delay: 0.2s; }
-        .slide.active .info-card:nth-child(2) { animation-delay: 0.3s; }
-        .slide.active .info-card:nth-child(3) { animation-delay: 0.4s; }
-        .slide.active .info-card:nth-child(4) { animation-delay: 0.5s; }
-
-        @keyframes smoothSlideIn { to { opacity: 1; transform: translate3d(0, 0, 0); } }
-
-        .info-card.warning { border-left-color: #f59e0b; }
-        .info-icon { font-size: 2.5rem; color: #f8fafc; width: 4vw; min-width: 45px; text-align: center; margin-right: 1.5vw; text-shadow: 0 0 15px rgba(255,255,255,0.3); }
-        .info-text { font-size: 1.2rem; line-height: 1.4; color: #cbd5e1; }
-        .info-text strong { color: #ffffff; font-weight: 800; font-size: 1.6rem; display: block; margin-bottom: 3px; }
-
-        /* Conteneur d'image (Bords arrondis et ombres) */
-        .dynamic-image {
-            width: 100%; height: 60vh; border-radius: 16px; overflow: hidden;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255,255,255,0.05);
-            background: #010409; position: relative;
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        .dynamic-image img, .intro-bg-container img {
-            width: 100%; height: 100%; object-fit: cover; display: block; position: absolute;
-            top: 0; left: 0; animation: fadeInImage 1.5s ease-in;
-        }
-
-        @keyframes fadeInImage { from { opacity: 0; } to { opacity: 1; } }
-
-        /* État de chargement IA stable */
-        .loader-container { text-align: center; color: #06b6d4; font-size: 1rem; font-weight: 600; animation: pulse 1s infinite; }
-        .loader-container i { font-size: 3rem; margin-bottom: 15px; display: block; }
-        @keyframes pulse { 50% { opacity: 0.5; } }
+        .slide.active { opacity: 1; visibility: visible; transform: translate3d(0, 0, 0); z-index: 20; }
 
         /* =========================================
-           5. LA TERRE GÉANTE QUI TOURNE (INTRO) - WOW EFFECT
+           5. LA TERRE GÉANTE (ARRIÈRE-PLAN COMPLET INTRO)
            ========================================= */
         .slide-intro { justify-content: center; align-items: center; text-align: center; padding: 0; overflow: hidden; }
         
         .earth-full-bg {
             position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
             border-radius: 50%;
-            /* Texture Terre stable (Wikipedia Commons) */
-            background-image: url('https://upload.wikimedia.org/wikipedia/commons/c/c4/Earthmap1000x500compac.jpg');
-            background-size: 200% 100%;
-            /* L'animation de rotation qui fait tourner la texture de fond */
-            animation: spinEarthTex 25s linear infinite;
-            /* L'ombre interne qui simule la sphère 3D */
-            box-shadow: 
-                inset -50px -50px 150px rgba(0, 0, 0, 0.95), 
-                inset 20px 20px 60px rgba(255, 255, 255, 0.2);
-            filter: blur(1px); opacity: 0.8;
-            transform: rotate(-15deg); /* Légère inclinaison de l'axe */
-            z-index: 0; will-change: background-position;
+            /* Une belle texture stable, et si ça coupe, un fond bleu nuit tournant */
+            background-color: #001133;
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Solarsystemscope_texture_8k_earth_daymap.jpg/1024px-Solarsystemscope_texture_8k_earth_daymap.jpg');
+            background-size: cover; background-repeat: repeat-x;
+            animation: spinEarthTex 40s linear infinite;
+            box-shadow: inset -80px -80px 200px rgba(0, 0, 0, 0.95), inset 20px 20px 80px rgba(0, 242, 254, 0.2);
+            opacity: 0.7; transform: rotate(-10deg); z-index: 0;
         }
 
         @keyframes spinEarthTex {
             0% { background-position: 0 0; }
-            100% { background-position: -200% 0; }
+            100% { background-position: -2000px 0; }
         }
 
         .intro-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, rgba(1, 4, 9, 0.1) 0%, rgba(1, 4, 9, 0.8) 100%);
+            background: radial-gradient(circle at center, rgba(1, 4, 9, 0.2) 0%, rgba(1, 4, 9, 0.9) 100%);
             z-index: 1; pointer-events: none;
         }
 
@@ -168,14 +113,58 @@
         }
         .intro-title-text { font-size: clamp(2.5rem, 6vw, 8rem); font-weight: 900; line-height: 1.1; margin-bottom: 2vh; text-shadow: 0 5px 30px rgba(0,0,0,0.8); }
         .intro-title-text span { background: linear-gradient(90deg, #00f2fe, #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .intro-subtitle-text { font-size: clamp(1rem, 2vw, 2.5rem); color: #cbd5e1; margin-bottom: 5vh; font-weight: 600; text-shadow: 0 3px 15px rgba(0,0,0,0.8); }
-        .presenters-box { font-size: clamp(0.9rem, 1.6vw, 2rem); color: #f59e0b; font-weight: 800; background: rgba(0, 0, 0, 0.6); padding: 12px 35px; border-radius: 100px; border: 2px solid rgba(245, 158, 11, 0.3); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .intro-subtitle-text { font-size: clamp(1rem, 2.2vw, 3rem); color: #cbd5e1; margin-bottom: 5vh; font-weight: 600; text-shadow: 0 3px 15px rgba(0,0,0,0.8); }
+        .presenters-box { font-size: clamp(0.9rem, 1.8vw, 2.2rem); color: #f59e0b; font-weight: 800; background: rgba(0, 0, 0, 0.7); padding: 12px 35px; border-radius: 100px; border: 2px solid rgba(245, 158, 11, 0.4); backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+
+        /* =========================================
+           6. DESIGN DES DIAPOS DE CONTENU
+           ========================================= */
+        .slide-header { margin-bottom: 2vh; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 1vh; }
+        .slide-title { font-size: clamp(1.8rem, 3vw, 3.5rem); font-weight: 900; text-transform: uppercase; text-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        .slide-title span { color: #00f2fe; }
+
+        .slide-content { display: grid; grid-template-columns: 1fr 1fr; gap: 3vw; flex-grow: 1; align-items: center; }
+
+        /* Cartes */
+        .text-column { display: flex; flex-direction: column; gap: 1.5vh; }
+        .info-card {
+            background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(255, 255, 255, 0.05);
+            border-left: 6px solid #00f2fe; border-radius: 12px;
+            padding: 2.5vh 2vw; display: flex; align-items: center;
+            backdrop-filter: blur(25px); opacity: 0; transform: translate3d(-30px, 0, 0);
+        }
+
+        .slide.active .info-card { animation: smoothSlideIn 0.6s forwards ease-out; }
+        .slide.active .info-card:nth-child(1) { animation-delay: 0.1s; }
+        .slide.active .info-card:nth-child(2) { animation-delay: 0.2s; }
+        .slide.active .info-card:nth-child(3) { animation-delay: 0.3s; }
+        .slide.active .info-card:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes smoothSlideIn { to { opacity: 1; transform: translate3d(0, 0, 0); } }
+
+        .info-card.warning { border-left-color: #f59e0b; }
+        .info-icon { font-size: 2.5rem; color: #f8fafc; width: 4vw; min-width: 45px; text-align: center; margin-right: 1.5vw; text-shadow: 0 0 15px rgba(255,255,255,0.3); }
+        .info-text { font-size: 1.2rem; line-height: 1.4; color: #cbd5e1; }
+        .info-text strong { color: #ffffff; font-weight: 800; font-size: 1.6rem; display: block; margin-bottom: 3px; }
+
+        /* Conteneur d'image IA (Simulée) */
+        .dynamic-image {
+            width: 100%; height: 60vh; border-radius: 16px; overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255,255,255,0.05);
+            background: #010409; position: relative;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* Effet de chargement */
+        .loader-container { text-align: center; color: #00f2fe; font-size: 1.2rem; font-weight: 600; animation: pulse 1s infinite; }
+        .loader-container i { font-size: 3.5rem; margin-bottom: 15px; display: block; }
+        @keyframes pulse { 50% { opacity: 0.5; } }
 
         /* =========================================
            7. CONCLUSION SLIDE
            ========================================= */
         .conclusion-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2vw; margin-bottom: 4vh; width: 100%; }
-        .conclusion-card { background: rgba(15, 23, 42, 0.3); border-top: 6px solid #00f2fe; border-radius: 16px; padding: 4vh 2vw; text-align: center; backdrop-filter: blur(25px); opacity: 0; transform: translate3d(0, 20px, 0); }
+        .conclusion-card { background: rgba(15, 23, 42, 0.5); border-top: 6px solid #00f2fe; border-radius: 16px; padding: 4vh 2vw; text-align: center; backdrop-filter: blur(25px); opacity: 0; transform: translate3d(0, 20px, 0); }
         .slide.active .conclusion-card { animation: smoothSlideUp 0.6s forwards ease-out; }
         .slide.active .conclusion-card:nth-child(1) { animation-delay: 0.3s; }
         .slide.active .conclusion-card:nth-child(2) { animation-delay: 0.5s; border-top-color: #f59e0b; }
@@ -192,20 +181,20 @@
         @keyframes pulse-thankyou { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
 
         /* =========================================
-           8. ARTHUR INDUSTRIES BRANDING (DESSINÉ EN PUR CODE)
+           8. ARTHUR INDUSTRIES BRANDING (100% SÉCURISÉ EN LIGNE)
            ========================================= */
         .brand-footer {
-            position: absolute; bottom: 2vh; left: 4vw;
+            position: absolute; bottom: 2vh; right: 4vw;
             display: flex; align-items: center; gap: 10px; z-index: 50;
         }
-        .brand-text { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.3); letter-spacing: 1px; }
+        .brand-text { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.4); letter-spacing: 1px; }
     </style>
 </head>
 <body>
 
     <div id="cyber-background">
-        <div class="orb" style="width: 50vw; height: 50vw; top: -10vw; left: -10vw; animation-delay: 0s;"></div>
-        <div class="orb" style="width: 60vw; height: 60vw; bottom: -20vw; right: -10vw; animation-delay: -5s; background: rgba(59, 130, 246, 0.1);"></div>
+        <div class="orb" style="width: 50vw; height: 50vw; top: -10vw; left: -10vw; background: rgba(0, 242, 254, 0.15);"></div>
+        <div class="orb" style="width: 60vw; height: 60vw; bottom: -20vw; right: -10vw; animation-delay: -5s; background: rgba(59, 130, 246, 0.15);"></div>
         <div class="orb" style="width: 30vw; height: 30vw; top: 30vh; left: 40vw; animation-delay: -10s; background: rgba(245, 158, 11, 0.15);"></div>
     </div>
     
@@ -231,10 +220,10 @@
             <div class="slide-header"><h2 class="slide-title">Local News: <span>Marseille</span></h2></div>
             <div class="slide-content">
                 <div class="text-column">
-                    <div class="info-card"><i class="fa-solid fa-arrow-trend-up info-icon"></i><div class="info-text"><strong>Tourism Boom</strong> Record numbers of visitors this year.</div></div>
-                    <div class="info-card"><i class="fa-solid fa-hotel info-icon"></i><div class="info-text"><strong>Business Growth</strong> Hotels and restaurants are full.</div></div>
-                    <div class="info-card"><i class="fa-solid fa-briefcase info-icon"></i><div class="info-text"><strong>Job Creation</strong> Strong hiring in the service sector.</div></div>
-                    <div class="info-card warning"><i class="fa-solid fa-triangle-exclamation info-icon" style="color:#f59e0b;"></i><div class="info-text"><strong>New Challenges</strong> Managing traffic, noise, and housing.</div></div>
+                    <div class="info-card"><i class="fa-solid fa-arrow-trend-up info-icon"></i><div class="info-text"><strong>Tourism Boom</strong><span>Record numbers of visitors this year.</span></div></div>
+                    <div class="info-card"><i class="fa-solid fa-hotel info-icon"></i><div class="info-text"><strong>Business Growth</strong><span>Hotels and restaurants are full.</span></div></div>
+                    <div class="info-card"><i class="fa-solid fa-briefcase info-icon"></i><div class="info-text"><strong>Job Creation</strong><span>Strong hiring in the service sector.</span></div></div>
+                    <div class="info-card warning"><i class="fa-solid fa-triangle-exclamation info-icon" style="color:#f59e0b;"></i><div class="info-text"><strong>New Challenges</strong><span>Managing traffic, noise, and housing.</span></div></div>
                 </div>
                 <div id="ai-img-marseille" class="dynamic-image"></div>
             </div>
@@ -316,11 +305,41 @@
     </div>
 
     <script>
-        // --- 1. SÉCURITÉ ANTI-TREMBLEMENT SAFARI MAC ---
-        // Force les animations à se caler sur le rafraîchissement de l'écran
-        window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame;
+        // =========================================
+        // 1. SIMULATEUR IA (IMAGES GARANTIES À 100%)
+        // =========================================
+        
+        function simulerGenerationIA(containerId, imageUrl) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            // Étape 1 : Le logo qui cherche
+            container.innerHTML = `
+                <div class="loader-container">
+                    <i class="fa-solid fa-microchip fa-fade"></i>
+                    <p>Génération IA en cours...</p>
+                </div>
+            `;
+            
+            // Étape 2 : L'image apparaît après 1.5 secondes (pour faire vrai)
+            setTimeout(() => {
+                container.innerHTML = `<img src="${imageUrl}" style="width:100%; height:100%; object-fit:cover; animation: fadeInImage 1s ease-in;" alt="AI Image">`;
+            }, 1500);
+        }
 
-        // --- 2. LOGIQUE DU DIAPORAMA ---
+        window.addEventListener('load', () => {
+            // Marseille (Image ultra-sécurisée Pexels qui ne plantera pas)
+            simulerGenerationIA('ai-img-marseille', 'https://images.pexels.com/photos/161815/marseilles-old-port-boats-france-161815.jpeg?auto=compress&cs=tinysrgb&w=1200');
+            // France (Boulangerie traditionnelle)
+            simulerGenerationIA('ai-img-france', 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1200&q=80');
+            // Tech (Le nouveau Robot super stylé !)
+            simulerGenerationIA('ai-img-tech', 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1200&q=80');
+        });
+
+
+        // =========================================
+        // 2. MOTEUR DE NAVIGATION
+        // =========================================
         let diapoActuelle = 0;
         const totalDiapos = 5;
         const slides = document.querySelectorAll('.slide');
@@ -338,28 +357,24 @@
             mettreAJourProgression();
         }
 
-        // --- 3. PLEIN ÉCRAN UNIVERSEL (MAC/SAFARI OK) ---
+        // --- PLEIN ÉCRAN ---
         function toggleFullScreen() {
-            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-                // Technique spéciale pour forcer Safari Mac à cacher ses barres
-                window.scrollTo(0, 1);
-                const req = document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen;
-                req.call(document.documentElement).then(() => {
-                    document.querySelector('.fullscreen-btn').style.opacity = '0.1';
-                }).catch(err => console.log(err));
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(e => console.log(e));
             } else {
-                const exit = document.exitFullscreen || document.webkitExitFullscreen;
-                exit.call(document).catch(err => console.log(err));
-                document.querySelector('.fullscreen-btn').style.opacity = '0.6';
+                if(document.exitFullscreen) document.exitFullscreen();
             }
         }
 
-        // --- 4. CONTRÔLES SÉCURISÉS & TRACKPAD MAC ---
+        // --- CONTRÔLES SOURIS / CLAVIER ---
         document.addEventListener('click', (e) => {
             if (e.target.closest('.fullscreen-btn')) return;
             changerDiapo(diapoActuelle + 1);
         });
-        document.addEventListener('contextmenu', (e) => { e.preventDefault(); changerDiapo(diapoActuelle - 1); });
+        
+        document.addEventListener('contextmenu', (e) => { 
+            e.preventDefault(); changerDiapo(diapoActuelle - 1); 
+        });
 
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') changerDiapo(diapoActuelle + 1);
@@ -367,52 +382,18 @@
             else if (e.key === 'f' || e.key === 'F') toggleFullScreen();
         });
 
-        // TRACKPAD - Fix du défilement ultra-rapide (Chronomètre intégré)
+        // --- TRACKPAD (SÉCURITÉ ANTI-DÉRAPAGE) ---
         let dernierScroll = 0;
         window.addEventListener('wheel', (e) => {
             const maintenant = new Date().getTime();
-            // Bloque le défilement pendant 1,2 secondes après chaque mouvement (Parfait pour Trackpad Mac)
             if (maintenant - dernierScroll < 1200) return; 
 
-            // Détecte si le mouvement est assez fort
-            if (Math.abs(e.deltaY) > 25 || Math.abs(e.deltaX) > 25) {
-                if (e.deltaY > 0 || e.deltaX > 0) changerDiapo(diapoActuelle + 1); // Suivant
-                else changerDiapo(diapoActuelle - 1); // Précédent
+            if (Math.abs(e.deltaY) > 20 || Math.abs(e.deltaX) > 20) {
+                if (e.deltaY > 0 || e.deltaX > 0) changerDiapo(diapoActuelle + 1);
+                else changerDiapo(diapoActuelle - 1);
                 dernierScroll = maintenant;
             }
-        }, { passive: true }); // passive pour Safari Mac
-
-        // --- 5. CHARGEMENT IA SIMULÉ (IMAGES GARANTIES) ---
-        // J'ai utilisé des photos HD stables correspondantes pour garantir que tout s'affiche.
-        const photosMagiques = {
-            "ai-img-marseille": "https://images.pexels.com/photos/161815/marseilles-old-port-boats-france-161815.jpeg?auto=compress&cs=tinysrgb&w=1200", // Image ultra-sécurisée Pexels pour Marseille
-            "ai-img-france": "https://images.unsplash.com/photo-1534620808146-d33bb39128b2?auto=format&fit=crop&w=1200&q=80", // Boulangerie
-            "ai-img-tech": "https://images.unsplash.com/photo-1581091215367-9b6c00b3035a?auto=format&fit=crop&w=1200&q=80" // Le Robot stylé
-        };
-
-        function chargerImage(containerId) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            // 1. On affiche l'animation de magie IA
-            container.innerHTML = `
-                <div class="loader-container">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i>
-                    <p>Génération IA...</p>
-                </div>
-            `;
-            // 2. Après 1.5 seconde, pouf ! L'image apparaît.
-            setTimeout(() => {
-                container.innerHTML = `<img src="${photosMagiques[containerId]}" alt="Image">`;
-            }, 1500);
-        }
-
-        // DÉCLENCHER LA CRÉATION DES IMAGES DES LE CHARGEMENT
-        window.onload = () => {
-            chargerImage("ai-img-marseille");
-            chargerImage("ai-img-france");
-            chargerImage("ai-img-tech");
-            mettreAJourProgression();
-        };
+        });
     </script>
 </body>
 </html>
